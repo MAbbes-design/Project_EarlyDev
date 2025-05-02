@@ -23,15 +23,30 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Install Required .Net Workloads
+    - name: Install Android Workloads
       run: dotnet workload install maui-android
+
+    - name: Build Android App
+      run: dotnet build --framework net8.0-android
         
     - name: Restore dependencies
       run: dotnet restore
       
     - name: Build
       run: dotnet build --no-restore
-      
+
+  test:
+   needs: build # runs after the build job
+   runs-on: ubuntu-latest
+   steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+  
     - name: Test
       run: dotnet test --no-build --verbosity normal
  
