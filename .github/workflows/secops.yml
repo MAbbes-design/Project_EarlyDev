@@ -1,3 +1,4 @@
+
 name: SecOps Pipeline 
 
 on: 
@@ -6,6 +7,10 @@ on:
   pull_request:  
     branches: [ "main" ] # Runs security checks when merging a PR into the main branch
 
+permissions:
+  contents: read
+  security-events: write
+  
 jobs: 
   security_scan: 
     runs-on: ubuntu-latest
@@ -13,30 +18,45 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
-    
+
     - name: Setup .NET # Install .NET runtime for security checks
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v4      
       with:
         dotnet-version: 8.0.x
-    
-    - name: Run Static Code Analysis (SAST) # Uses Snyk to scan code for security vulnerabilities
-      uses: snyk/actions/dotnet@master
-      env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      with:
-        args: test
-    
-    - name: Check for Vulnerable Dependencies # Scans NuGet packages for vulnerabilities
-      run: dotnet list package --vulnerable
-    
-    - name: GitHub Secret Scanning # Scans for exposed secrets in the repository
-      run: echo "Checking for leaked secrets..." 
-    
-    - name: Enforce Security Before Deployment # Blocks merging if vulnerabilities exist
+
+    - name: Restore dependencies
+      run: |
+         dotnet --version
+         dotnet restore 
+         
+    - name: Install OWASP Dependency-Check #OWASP Dependency-Check for NuGet Vulnerabilities
+      run: |
+        wget https://github.com/jeremylong/DependencyCheck/releases/download/v12.1.0/dependency-check-12.1.0-release.zip
+        unzip dependency-check-12.1.0-release.zip
+        chmod +x dependency-check/bin/dependency-check.sh
+        
+    - name: Run Dependency-Check with NVD key #scans my dependencies
+      run: ./dependency-check/bin/dependency-check.sh --project "EarlyDevSecurityScan" --out reports --scan /home/runner/work/Project_EarlyDev/Project_EarlyDev --nvdApiKey ${{ secrets.NVD_API_KEY }}
+
+    - name: Install Gitleaks 
+      run: |
+        curl -sSfL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks_8.25.1_linux_x64.tar.gz -o gitleaks.tar.gz
+        tar -xzf gitleaks.tar.gz
+        chmod +x gitleaks
+        mv gitleaks /usr/local/bin/
+        
+    - name: Run Gitleaks Secret Scan # Scans for leaked secrets in my codebase
+      run: gitleaks detect --source . --redact
+
+    - name: Enforce Security Before Deployment # Blocks merging if vulnerabilities exist in either the .NET packages or OWASP scan
       run: |
         dotnet list package --vulnerable
         if [ $? -ne 0 ]; then
           echo "Vulnerable dependencies detected! Merge blocked."
+          exit 1
+        fi
+        if grep -i "CRITICAL" reports/dependency-check-report.html; then
+          echo "Critical vulnerabilities found, Merge will be blocked."
           exit 1
         fi
     
