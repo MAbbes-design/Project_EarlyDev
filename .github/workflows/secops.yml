@@ -33,8 +33,8 @@ jobs:
         unzip dependency-check-12.1.0-release.zip
         chmod +x dependency-check/bin/dependency-check.sh
         
-    - name: Run OWASP Dependency-Check (NuGet Security Scan)
-      run: ./dependency-check/bin/dependency-check.sh --project "EarlyDevSecurityScan" --out reports --scan /home/runner/work/Project_EarlyDev/Project_EarlyDev
+    - name: Run Dependency-Check with NVD key
+      run: ./dependency-check/bin/dependency-check.sh --project "EarlyDevSecurityScan" --out reports --scan /home/runner/work/Project_EarlyDev/Project_EarlyDev --nvdApiKey ${{ secrets.NVD_API_KEY }}
 
     - name: Set Up CodeQL Analysis #CodeQL for Static Analysis (Detects Security Issues in Code)
       uses: github/codeql-action/init@v2
