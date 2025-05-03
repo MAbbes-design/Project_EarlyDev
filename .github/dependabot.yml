@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "nuget" # Dependabot to monitor .NET dependencies.
+    directory: "/" # Scans the root directory.
+    schedule:
+      interval: "daily" # 
+      time: "05:30" # Scheduled execution time for the scans
+    open-pull-requests-limit: 2 # Set dependabot PR limit to 2
+    commit-message:
+      prefix: "Security Update:" # Adds a useful prefix to let me know this is a dependabot PR
+      include: "scope" # Includes the package scope in the commit message.
+    rebase-strategy: "auto" # Allows dependabot to rebase PR's when there is a conflict.
