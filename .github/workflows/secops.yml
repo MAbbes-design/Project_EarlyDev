@@ -14,7 +14,7 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Setup .NET
+    - name: Setup .NET # Install .NET runtime for security checks
       uses: actions/setup-dotnet@v4      
       with:
         dotnet-version: 8.0.x
@@ -24,12 +24,7 @@ jobs:
 
     - name: Restore dependencies
       run: dotnet restore 
-    
-    - name: Setup .NET # Install .NET runtime for security checks
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
-    
+
     - name: Install Snyk CLI # Removes Docker reliance, installs Snyk via NPM
       run: npm install -g snyk
 
