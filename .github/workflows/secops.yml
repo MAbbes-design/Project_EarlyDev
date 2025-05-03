@@ -25,26 +25,40 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore 
 
-    - name: Install Snyk CLI # Removes Docker reliance, installs Snyk via NPM
-      run: npm install -g snyk
+    - name: Install OWASP Dependency-Check #OWASP Dependency-Check for NuGet Vulnerabilities
+      run: |
+        wget https://github.com/jeremylong/DependencyCheck/releases/download/v7.4.0/dependency-check-7.4.0-release.zip
+        unzip dependency-check-7.4.0-release.zip
+        chmod +x dependency-check/bin/dependency-check.sh
+        
+    - name: Run OWASP Dependency-Check (NuGet Security Scan)
+      run: ./dependency-check/bin/dependency-check.sh --project "EarlyDevSecurityScan" --out reports --scan /home/runner/work/Project_EarlyDev/Project_EarlyDev
 
-    - name: Authenticate with Snyk # Ensures CLI authentication before running security scans
-      run: snyk auth ${{ secrets.SNYK_TOKEN }}
+    - name: Set Up CodeQL Analysis #CodeQL for Static Analysis (Detects Security Issues in Code)
+      uses: github/codeql-action/init@v2
+      with:
+        languages: 'csharp'
 
-    - name: Run Snyk Test
-      run: snyk test --json
+    - name: Run CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
     
-    - name: Check for Vulnerable Dependencies # Scans NuGet packages for vulnerabilities
-      run: dotnet list package --vulnerable
+    - name: GitHub Secret Scanning
+      uses: github/codeql-action/init@v2
+      with:
+        languages: 'csharp'
+
+    - name: Run CodeQL Secret Scanning
+      uses: github/codeql-action/analyze@v2
     
-    - name: GitHub Secret Scanning # Scans for exposed secrets in the repository
-      run: echo "Checking for leaked secrets..." 
-    
-    - name: Enforce Security Before Deployment # Blocks merging if vulnerabilities exist
+    - name: Enforce Security Before Deployment # Blocks merging if vulnerabilities exist in either the .NET packages or OWASP scan
       run: |
         dotnet list package --vulnerable
         if [ $? -ne 0 ]; then
           echo "Vulnerable dependencies detected! Merge blocked."
+          exit 1
+        fi
+        if grep -i "CRITICAL" reports/dependency-check-report.html; then
+          echo "Critical vulnerabilities found, Merge will be blocked."
           exit 1
         fi
     
