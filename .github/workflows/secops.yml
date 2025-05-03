@@ -23,12 +23,14 @@ jobs:
       run: dotnet workload install maui-android
 
     - name: Restore dependencies
-      run: dotnet restore 
+      run: |
+         dotnet --version
+         dotnet restore 
 
     - name: Install OWASP Dependency-Check #OWASP Dependency-Check for NuGet Vulnerabilities
       run: |
-        wget https://github.com/jeremylong/DependencyCheck/releases/download/v7.4.0/dependency-check-7.4.0-release.zip
-        unzip dependency-check-7.4.0-release.zip
+        wget https://github.com/jeremylong/DependencyCheck/releases/download/v12.1.0/dependency-check-12.1.0-release.zip
+        unzip dependency-check-12.1.0-release.zip
         chmod +x dependency-check/bin/dependency-check.sh
         
     - name: Run OWASP Dependency-Check (NuGet Security Scan)
