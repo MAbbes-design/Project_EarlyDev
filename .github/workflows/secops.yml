@@ -31,11 +31,8 @@ jobs:
     - name: Authenticate with Snyk # Ensures CLI authentication before running security scans
       run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
-    - name: Generate NuGet Dependency Manifest
-      run: dotnet list package --format json > snyk-dependencies.json
-
-    - name: Run Snyk Test Using Generated Manifest
-      run: snyk test --file=snyk-dependencies.json --json
+    - name: Run Snyk Test
+      run: snyk test --json
     
     - name: Check for Vulnerable Dependencies # Scans NuGet packages for vulnerabilities
       run: dotnet list package --vulnerable
