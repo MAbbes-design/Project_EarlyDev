@@ -31,11 +31,8 @@ jobs:
     - name: Authenticate with Snyk # Ensures CLI authentication before running security scans
       run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
-    - name: Generate NuGet Package lock file
-      run: dotnet list package --format json > packages.lock.json
-
     - name: Run SNYK dependency scan
-      run: snyk test --file=packages.lock.json --json
+      run: snyk test --file=Project_EarlyDev.sln --json
       continue-on-error: true # Continues workflow if no vulnerabilities are found (workaround for test hanging issue)
     
     - name: Check for Vulnerable Dependencies # Scans NuGet packages for vulnerabilities
