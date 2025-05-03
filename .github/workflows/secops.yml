@@ -40,13 +40,14 @@ jobs:
     - name: Run Dependency-Check with NVD key
       run: ./dependency-check/bin/dependency-check.sh --project "EarlyDevSecurityScan" --out reports --scan /home/runner/work/Project_EarlyDev/Project_EarlyDev --nvdApiKey ${{ secrets.NVD_API_KEY }}
 
-    - name: Install TruffleHog
+    - name: Install Gitleaks
       run: |
-        pip install --user truffleHog
-        export PATH="$HOME/.local/bin:$PATH"
+        curl -sSfL https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks-linux-amd64 -o /usr/local/bin/gitleaks
+        chmod +x /usr/local/bin/gitleaks
 
-    - name: Run TruffleHog Secret Scan
-      run: python -m truffleHog git --regex --entropy=True --max_depth=50 .
+    - name: Run Gitleaks Secret Scan
+      run: gitleaks detect --source . --redact
+
 
     - name: Enforce Security Before Deployment # Blocks merging if vulnerabilities exist in either the .NET packages or OWASP scan
       run: |
