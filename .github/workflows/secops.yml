@@ -27,20 +27,6 @@ jobs:
          dotnet --version
          dotnet restore 
 
-    - name: Build .NET MAUI Project Before CodeQL Scan
-      run: dotnet build
-         
-    - name: Set Up CodeQL Analysis #CodeQL for Static Analysis (Detects Security Issues in Code)
-      uses: github/codeql-action/init@v2
-      with:
-        languages: 'csharp'
-
-    - name: Run CodeQL Analysis
-      uses: github/codeql-action/analyze@v2
-
-    - name: Run CodeQL Secret Scanning
-      uses: github/codeql-action/analyze@v2
-
     - name: Install OWASP Dependency-Check #OWASP Dependency-Check for NuGet Vulnerabilities
       run: |
         wget https://github.com/jeremylong/DependencyCheck/releases/download/v12.1.0/dependency-check-12.1.0-release.zip
@@ -49,6 +35,14 @@ jobs:
         
     - name: Run Dependency-Check with NVD key
       run: ./dependency-check/bin/dependency-check.sh --project "EarlyDevSecurityScan" --out reports --scan /home/runner/work/Project_EarlyDev/Project_EarlyDev --nvdApiKey ${{ secrets.NVD_API_KEY }}
+
+    - name: GitHub Secret Scanning
+      uses: github/codeql-action/init@v2
+      with:
+       languages: 'csharp'
+
+    - name: Run CodeQL Secret Scanning
+      uses: github/codeql-action/analyze@v2
       
     - name: Enforce Security Before Deployment # Blocks merging if vulnerabilities exist in either the .NET packages or OWASP scan
       run: |
