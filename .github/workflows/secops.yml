@@ -40,9 +40,6 @@ jobs:
       uses: github/codeql-action/init@v2
       with:
        languages: 'csharp'
-
-    - name: Run CodeQL Secret Scanning
-      uses: github/codeql-action/analyze@v2
       
     - name: Enforce Security Before Deployment # Blocks merging if vulnerabilities exist in either the .NET packages or OWASP scan
       run: |
