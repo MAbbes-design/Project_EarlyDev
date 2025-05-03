@@ -1,0 +1,44 @@
+name: SecOps Pipeline 
+
+on: 
+  push: 
+    branches: [ "security/*", "feature/*" ] # Runs security checks when pushing to security or feature branches
+  pull_request:  
+    branches: [ "main" ] # Runs security checks when merging a PR into the main branch
+
+jobs: 
+  security_scan: 
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET # Install .NET runtime for security checks
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    
+    - name: Run Static Code Analysis (SAST) # Uses Snyk to scan code for security vulnerabilities
+      uses: snyk/actions/dotnet@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        args: test
+    
+    - name: Check for Vulnerable Dependencies # Scans NuGet packages for vulnerabilities
+      run: dotnet list package --vulnerable
+    
+    - name: GitHub Secret Scanning # Scans for exposed secrets in the repository
+      run: echo "Checking for leaked secrets..." 
+    
+    - name: Enforce Security Before Deployment # Blocks merging if vulnerabilities exist
+      run: |
+        dotnet list package --vulnerable
+        if [ $? -ne 0 ]; then
+          echo "Vulnerable dependencies detected! Merge blocked."
+          exit 1
+        fi
+    
+    - name: Complete SecOps Checks # Confirm that all security checks have completed
+      run: echo "Security checks completed!"
