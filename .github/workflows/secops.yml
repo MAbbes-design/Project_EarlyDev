@@ -37,7 +37,7 @@ jobs:
       run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
     - name: Run Static Code Analysis (SAST) # Uses Snyk to scan code for security vulnerabilities
-      run: snyk test --json
+      run: snyk test --file=./Early_Dev_vs.csproj --json
       continue-on-error: true # Continues workflow if no vulnerabilities are found (workaround for test hanging issue)
     
     - name: Check for Vulnerable Dependencies # Scans NuGet packages for vulnerabilities
