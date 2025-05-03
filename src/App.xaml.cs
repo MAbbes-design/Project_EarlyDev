@@ -4,7 +4,7 @@
     {
         public App()
         {
-            InitializeComponent();
+            InitializeComponent(); //testing my security workflow by adding this comment. remove me later
 
             MainPage = new AppShell();
         }
