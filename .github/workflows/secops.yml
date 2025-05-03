@@ -33,9 +33,13 @@ jobs:
 
     - name: Debug GitHub Runner Directory
       run: ls -R /home/runner/work/Project_EarlyDev/Project_EarlyDev
+
+    - name: Run Snyk Test on `.csproj` File
+      run: snyk test --file=/home/runner/work/Project_EarlyDev/Project_EarlyDev/Early_Dev_vs.csproj --json
+      continue-on-error: true 
       
     - name: Run SNYK dependency scan
-      run: snyk test --file=./source/repos/Project_EarlyDev/Project_EarlyDev.sln --json
+      run: snyk test --file=/home/runner/work/Project_EarlyDev/Project_EarlyDev/Early_Dev_vs.sln --json
       continue-on-error: true # Continues workflow if no vulnerabilities are found (workaround for test hanging issue)
     
     - name: Check for Vulnerable Dependencies # Scans NuGet packages for vulnerabilities
