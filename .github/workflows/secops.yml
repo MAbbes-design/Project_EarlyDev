@@ -32,7 +32,7 @@ jobs:
       run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
     - name: Run SNYK dependency scan
-      run: snyk test --file=Project_EarlyDev.sln --json
+      run: snyk test --file=./source/repos/Project_EarlyDev/Project_EarlyDev.sln --json
       continue-on-error: true # Continues workflow if no vulnerabilities are found (workaround for test hanging issue)
     
     - name: Check for Vulnerable Dependencies # Scans NuGet packages for vulnerabilities
