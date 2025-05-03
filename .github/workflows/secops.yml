@@ -6,6 +6,10 @@ on:
   pull_request:  
     branches: [ "main" ] # Runs security checks when merging a PR into the main branch
 
+permissions:
+  contents: read
+  security-events: write
+  
 jobs: 
   security_scan: 
     runs-on: ubuntu-latest
@@ -37,9 +41,7 @@ jobs:
       run: ./dependency-check/bin/dependency-check.sh --project "EarlyDevSecurityScan" --out reports --scan /home/runner/work/Project_EarlyDev/Project_EarlyDev --nvdApiKey ${{ secrets.NVD_API_KEY }}
 
     - name: GitHub Secret Scanning
-      uses: github/codeql-action/init@v2
-      with:
-       languages: 'csharp'
+      uses: advanced-security/github-secret-scanning-action@v1
       
     - name: Enforce Security Before Deployment # Blocks merging if vulnerabilities exist in either the .NET packages or OWASP scan
       run: |
