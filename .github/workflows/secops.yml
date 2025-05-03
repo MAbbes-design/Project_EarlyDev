@@ -41,11 +41,13 @@ jobs:
       run: ./dependency-check/bin/dependency-check.sh --project "EarlyDevSecurityScan" --out reports --scan /home/runner/work/Project_EarlyDev/Project_EarlyDev --nvdApiKey ${{ secrets.NVD_API_KEY }}
 
     - name: Install TruffleHog
-      run: pip install truffleHog
+      run: |
+        pip install --user truffleHog
+        export PATH="$HOME/.local/bin:$PATH"
 
     - name: Run TruffleHog Secret Scan
-      run: truffleHog git --regex --entropy=True --max_depth=50 .
-  
+      run: python -m truffleHog git --regex --entropy=True --max_depth=50 .
+
     - name: Enforce Security Before Deployment # Blocks merging if vulnerabilities exist in either the .NET packages or OWASP scan
       run: |
         dotnet list package --vulnerable
