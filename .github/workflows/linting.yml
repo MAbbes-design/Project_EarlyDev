@@ -18,11 +18,19 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Install Android Workloads
+        run: dotnet workload install maui-android
+        
+      - name: Restore dependencies
+        run: |
+         dotnet --version
+         dotnet restore 
+
       - name: Install StyleCop
         run: dotnet tool install --global dotnet-format
 
       - name: Run StyleCop
-        run: dotnet format /workspace:Project_EarlyDev.sln --verify-no-changes --verbosity detailed || true
+        run: dotnet format /workspace:Early_Dev_vs.sln --verify-no-changes --verbosity detailed || true
 
       - name: Install SonarCloud Scanner
         uses: SonarSource/sonarcloud-github-action@v2
