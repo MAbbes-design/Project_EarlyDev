@@ -30,6 +30,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup
     steps:
+    - name: List Available Directories
+      run: ls -l
+      
+    - name: Find Project Directory
+      run: find . -type d -name "Project_EarlyDev"
+      
     - name: Run C# Roslyn Analyzers
       run: |
         cd Project_EarlyDev
@@ -39,8 +45,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup
     steps:
-    - name: Install StyleCop
-      run: dotnet tool install --global StyleCop.Analyzers
+    - name: Install StyleCop.Analyzers
+      run: dotnet add package StyleCop.Analyzers
 
     - name: Run StyleCop for C# Formatting
       run: dotnet format
@@ -88,5 +94,6 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         ./.sonar/scanner/dotnet-sonarscanner begin /k:"MAbbes-design_Project_EarlyDev" /o:"mabbes-design" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-        dotnet build
+        dotnet build Project_EarlyDev.sln  
         ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
