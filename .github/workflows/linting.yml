@@ -60,8 +60,8 @@ jobs:
     - name: Install StyleCop
       run: dotnet tool install --global dotnet-format
 
-    - name: Run StyleCop for C# Formatting
-      run: dotnet format --verify-no-changes --severity warn
+    - name: Run Code Formatting for Project
+      run: dotnet format ${{ github.workspace }}/Project_EarlyDev/Early_Dev_vs.csproj --verify-no-changes --severity warn
 
     - name: Run XAML Styler
       run: xstyler --check
