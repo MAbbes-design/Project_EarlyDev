@@ -35,22 +35,28 @@ jobs:
       - name: Run StyleCop
         run: dotnet build /p:TreatWarningsAsErrors=true
 
-      - name: Install SonarCloud Scanner
-        uses: SonarSource/sonarcloud-github-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Install SonarAnalyzer
+        run: dotnet add package SonarAnalyzer.CSharp
 
-      - name: Run SonarCloud Analysis
-        run: dotnet sonarscanner begin /k:"MAbbes-design_Project_EarlyDev" /o:"mabbes-design" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" || true
-      
-      - name: Restore dependencies
-        run: dotnet restore
-      
-      - name: Build project
-        run: dotnet build --no-restore --configuration Release
-      
-      - name: Run .NET Code Analysis
-        run: dotnet build --no-restore /p:EnableNETAnalyzers=true /p:TreatWarningsAsErrors=true || true
+      - name: Run SonarAnalyzer
+        run: dotnet build-server shutdown && dotnet build /p:TreatWarningsAsErrors=true
 
-      - name: End SonarCloud Analysis
-        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+      #- name: Install SonarCloud Scanner
+       # uses: SonarSource/sonarcloud-github-action@v2
+       # env:
+       #   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+     #- name: Run SonarCloud Analysis
+      #  run: dotnet sonarscanner begin /k:"MAbbes-design_Project_EarlyDev" /o:"mabbes-design" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" || true
+      
+     # - name: Restore dependencies
+      #  run: dotnet restore
+      
+      #- name: Build project
+      #  run: dotnet build --no-restore --configuration Release
+      
+     # - name: Run .NET Code Analysis
+     #  run: dotnet build --no-restore /p:EnableNETAnalyzers=true /p:TreatWarningsAsErrors=true || true
+
+      #- name: End SonarCloud Analysis
+      #  run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
