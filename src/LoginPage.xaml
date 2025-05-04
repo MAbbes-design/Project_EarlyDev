@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Early_Dev_vs.src.LoginPage">
+            <!--Title="Login"> -->
+
+    <VerticalStackLayout Padding="20" Spacing="30">
+
+        <!-- Banner -->
+        <Label Text="Early Development"
+               FontSize="30"
+               HorizontalOptions="Center"
+               Padding="10"
+               FontAttributes="Bold"
+               TextColor="DarkBlue"/>
+
+        <!-- Login Form -->
+        <Entry x:Name="UsernameEntry"
+               Placeholder="Username"
+               WidthRequest="300"
+               HorizontalOptions="Center"/>
+
+        <Entry x:Name="PasswordEntry"
+               Placeholder="Password"
+               IsPassword="True"
+               WidthRequest="300"
+               HorizontalOptions="Center"/>
+
+        <!-- Login Button -->
+        <Button Text="Login"
+                BackgroundColor="DarkBlue"
+                TextColor="White"
+                Clicked="OnLoginClicked"
+                HorizontalOptions="Center"
+                WidthRequest="150"/>
+
+    </VerticalStackLayout>
+</ContentPage>
