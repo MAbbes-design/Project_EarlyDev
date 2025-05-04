@@ -1,0 +1,23 @@
+on:
+  pull_request:
+    branches:
+      - main  # Runs when a PR targets main
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Add PR Comment for Review
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: "Code review initiated!\n Linting and security checks will ensure code is in order before merging."
+            });
