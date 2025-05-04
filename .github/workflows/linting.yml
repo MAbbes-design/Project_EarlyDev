@@ -3,60 +3,54 @@ name: Code Quality
 on:
   push:
     branches:
-      - main
-  pull_request:
+      - main # runs on every push to main 
+  pull_request: # triggers on PR events also
 
 jobs:
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # uses a Ubuntu runner environment
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # grabs my code from the repo
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v4 # Installs .NET SDK
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '8.0.x' # specifies which version of .NET I want it to use
 
       - name: Install Android Workloads
-        run: dotnet workload install maui-android
+        run: dotnet workload install maui-android # sets up MAUI android workload
         
-      - name: Restore dependencies
+      - name: Restore dependencies # restores the projects dependencies
         run: |
          dotnet --version
          dotnet restore 
 
-     # - name: Install StyleCop
-     #   run: dotnet tool install --global dotnet-format
+      - name: Install StyleCop 
+        run: dotnet tool install --global dotnet-format # installs Stylecop to the runner to allow for enforcing formatting rules.
 
-     # - name: Fix code style issues
-     #   run: dotnet format Early_Dev_vs.csproj --verbosity diagnostic
+      - name: Fix code style issues
+        run: dotnet format Early_Dev_vs.csproj --verbosity diagnostic # formats my code using stylecop 
         
-     # - name: Run StyleCop
-     #   run: dotnet build /p:TreatWarningsAsErrors=true
+      - name: Run StyleCop
+        run: dotnet build /p:TreatWarningsAsErrors=true # runs stylecop analysis on build with error handling
 
-     # - name: Install SonarAnalyzer
-     #   run: dotnet add package SonarAnalyzer.CSharp
-
-      #- name: Run SonarAnalyzer
-      #  run: dotnet build-server shutdown && dotnet build /p:EnableNETAnalyzers=true /p:TreatWarningsAsErrors=true
-
-      - name: Install SonarScanner
+      - name: Install SonarScanner # installs sonarclouds sonar scanner to carry out code analysis
         run: dotnet tool install --global dotnet-sonarscanner
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Initialize SonarCloud Analysis
+      - name: Initialize SonarCloud Analysis # begins sonarclouds analysis process, essentially carries out a handshake between my project repo and the sonarcloud website
         run: dotnet sonarscanner begin /k:"MAbbes-design_Project_EarlyDev" /o:"mabbes-design" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
       
-      - name: Restore dependencies
+      - name: Restore dependencies # restores dependencies again so that sonarcloud sees them
         run: dotnet restore
       
-      - name: Build project
+      - name: Build project # builds the project while sonarcloud captures data for analysis
         run: dotnet build --no-restore --configuration Release
       
-      - name: Run .NET Code Analysis
+      - name: Run .NET Code Analysis # performs a build and enforces best practices on the codebase
         run: dotnet build --no-restore /p:EnableNETAnalyzers=true /p:TreatWarningsAsErrors=true || true
 
-      - name: End SonarCloud Analysis
+      - name: End SonarCloud Analysis # completes the sonarcoud analysis process and uploads the data to the web
         run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
