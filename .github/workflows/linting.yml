@@ -1,0 +1,53 @@
+name: Linting Pipeline
+
+on:
+  push:
+    branches: [ "main", "feature/*" ]
+  pull_request:
+    branches: [ "main", "feature/*" ]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      workspace: ${{ github.workspace }}
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+  syntax_check:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+    - name: Run C# Roslyn Analysers
+      run: dotnet build /warnaserror
+
+  formatting:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+    - name: Run StyleCop for C# Formatting
+      run: dotnet tool run stylecop
+
+    - name: Run XAML Styler
+      run: xstyler --check
+
+    - name: Run .NET Code Formatter
+      run: dotnet format --verify-no-changes
+
+  code_quality:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+    - name: Run SonarCloud Code Analysis
+      uses: SonarSource/sonarcloud-github-action@v2
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
