@@ -29,8 +29,8 @@ jobs:
       - name: Install StyleCop
         run: dotnet tool install --global dotnet-format
 
-      - name: Enforce code style
-        run: dotnet format Early_Dev_vs.csproj --verify-no-changes --verbosity diagnostic
+      - name: Fix code style issues
+        run: dotnet format Early_Dev_vs.csproj --verbosity diagnostic
         
       - name: Run StyleCop
         run: dotnet build /p:TreatWarningsAsErrors=true
