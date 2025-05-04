@@ -100,6 +100,7 @@ jobs:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         ./.sonar/scanner/dotnet-sonarscanner begin /k:"MAbbes-design_Project_EarlyDev" /o:"mabbes-design" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-        dotnet build Project_EarlyDev.sln  
+        dotnet build Early_Dev_vs.sln  # Specify the correct solution file
         ./.sonar/scanner/dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
 
