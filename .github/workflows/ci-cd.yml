@@ -2,13 +2,13 @@
 # This was an automated Github Actions generated file, and I amended it to make it more specific to my requirements.
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
-name: .NET
+name: ci-cd.NET
 
 on:
- # push:
-   # branches: [ "main" ]
- # pull_request:
-   # branches: [ "main" ]
+  workflow_run:
+    workflows: ["Security - DevSecOps"]  # Runs after secops.yml
+    types:
+      - completed
 
 jobs:
   build:
