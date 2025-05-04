@@ -12,8 +12,14 @@ jobs:
     outputs:
       workspace: ${{ github.workspace }}
     steps:
-    - name: Checkout Code
+    - name: Checkout Code (Full Repository)
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: true
+      
+    - name: List Repository Files After Checkout
+      run: ls -lR
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
