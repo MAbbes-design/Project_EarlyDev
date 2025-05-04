@@ -2,11 +2,11 @@
 name: SecOps Pipeline 
 
 on: 
-  push: 
-    branches: [ "security/*", "feature/*" ] # Runs security checks when pushing to security or feature branches
-  pull_request:  
-    branches: [ "main" ] # Runs security checks when merging a PR into the main branch
-
+  workflow_run: 
+   workflows: ["Code Quality"] # runs after the linting is complete.
+   types:
+     - completed     
+   
 permissions:
   contents: read
   security-events: write
