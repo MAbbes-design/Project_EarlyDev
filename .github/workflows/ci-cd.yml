@@ -6,7 +6,7 @@ name: ci-cd.NET
 
 on:
   workflow_run:
-    workflows: ["SecOps Pipeline "]  # Runs after secops.yml
+    workflows: ["SecOps Pipeline"]  # Runs after secops.yml
     types:
       - completed
 
