@@ -27,7 +27,7 @@ jobs:
         run: dotnet tool install --global dotnet-format
 
       - name: Run StyleCop
-        run: dotnet format /workspace:Early_Dev_vs.sln --verify-no-changes --verbosity detailed || true
+        run: dotnet format /workspace:Early_Dev_vs.sln --verify-no-changes --verbosity detailed; $LASTEXITCODE = 0
 
       - name: Install SonarCloud Scanner
         uses: SonarSource/sonarcloud-github-action@v2
