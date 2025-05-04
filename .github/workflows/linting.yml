@@ -41,8 +41,8 @@ jobs:
       #- name: Run SonarAnalyzer
       #  run: dotnet build-server shutdown && dotnet build /p:EnableNETAnalyzers=true /p:TreatWarningsAsErrors=true
 
-      - name: Install SonarCloud Scanner
-        uses: SonarSource/sonarcloud-github-action@v2
+      - name: Install SonarScanner
+        run: dotnet tool install --global dotnet-sonarscanner
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
