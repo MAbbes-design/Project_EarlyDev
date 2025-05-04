@@ -1,4 +1,6 @@
-﻿namespace Early_Dev_vs
+﻿using Microsoft.Maui.Controls;
+
+namespace Early_Dev_vs.src
 {
     public partial class MainPage : ContentPage
     {
