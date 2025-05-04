@@ -30,7 +30,7 @@ jobs:
         run: dotnet tool install --global dotnet-format
 
       - name: Enforce code style
-        run: dotnet format --verify-no-changes --verbosity diagnostic
+        run: dotnet format Early_Dev_vs.csproj --verify-no-changes --verbosity diagnostic
         
       - name: Run StyleCop
         run: dotnet build /p:TreatWarningsAsErrors=true
