@@ -1,12 +1,11 @@
 name: Code Quality
 
 on:
-  push:  # runs on every push to main 
-    branches:
-      - main
-  pull_request: # triggers on PR events also
-      branches:
-        -main
+  workflow_run:
+    workflows: ["Code Review Feedback"]  # Runs after code-review.yml
+    types:
+      - completed
+
 jobs:
   lint:
     runs-on: ubuntu-latest # uses a Ubuntu runner environment
