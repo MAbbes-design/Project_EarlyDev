@@ -12,11 +12,42 @@
         Title="Login"
         ContentTemplate="{DataTemplate local:LoginPage}"
         Route="LoginPage" />
-    
+
     <!-- Home Page Route -->
     <ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
+    <!-- Student Profiles Page 
+    <ShellContent
+        Title="Student Profiles"
+        ContentTemplate="{DataTemplate local:StudentProfilesPage}"
+        Route="StudentProfilesPage" />
+
+     //Lesson Selection Page 
+    <ShellContent
+        Title="Let’s Learn"
+        ContentTemplate="{DataTemplate local:LessonSelectionPage}"
+        Route="LessonSelectionPage" />
+
+    //Reports Page 
+    <ShellContent
+        Title="Reports"
+        ContentTemplate="{DataTemplate local:ReportsPage}"
+        Route="ReportsPage" />
+
+    //Test Management Page
+    <ShellContent
+        Title="Test Management"
+        ContentTemplate="{DataTemplate local:TestManagementPage}"
+        Route="TestManagementPage" />
+
+     //Settings Page 
+    <ShellContent
+        Title="Settings"
+        ContentTemplate="{DataTemplate local:SettingsPage}"
+        Route="SettingsPage" />  --> 
+
 </Shell>
+

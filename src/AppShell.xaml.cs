@@ -9,8 +9,14 @@ namespace Early_Dev_vs.src
             InitializeComponent();
 
             // Register Routes for Navigation
-            Routing.RegisterRoute(nameof(src.LoginPage), typeof(src.LoginPage));
-            Routing.RegisterRoute(nameof(src.MainPage), typeof(src.MainPage));
+            Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
+            Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
+            //Routing.RegisterRoute(nameof(StudentProfilesPage), typeof(StudentProfilesPage));
+            //Routing.RegisterRoute(nameof(LessonSelectionPage), typeof(LessonSelectionPage));
+            //Routing.RegisterRoute(nameof(ReportsPage), typeof(ReportsPage));
+            //Routing.RegisterRoute(nameof(TestManagementPage), typeof(TestManagementPage));
+            //Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
         }
     }
 }
+
