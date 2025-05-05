@@ -11,7 +11,8 @@ namespace Early_Dev_vs.src
 
         private async void OnStudentProfilesTapped(object sender, EventArgs e)
         {
-            await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
+            //await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
+            await Navigation.PushAsync(new StudentProfilesPage());
         }
 
         private async void OnLessonStartTapped(object sender, EventArgs e)

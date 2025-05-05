@@ -11,7 +11,7 @@ namespace Early_Dev_vs.src
             // Register Routes for Navigation
             Routing.RegisterRoute(nameof(LoginPage), typeof(LoginPage));
             Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
-            //Routing.RegisterRoute(nameof(StudentProfilesPage), typeof(StudentProfilesPage));
+            Routing.RegisterRoute(nameof(StudentProfilesPage), typeof(StudentProfilesPage));
             //Routing.RegisterRoute(nameof(LessonSelectionPage), typeof(LessonSelectionPage));
             //Routing.RegisterRoute(nameof(ReportsPage), typeof(ReportsPage));
             //Routing.RegisterRoute(nameof(TestManagementPage), typeof(TestManagementPage));
