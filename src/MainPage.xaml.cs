@@ -1,27 +1,39 @@
-﻿using Microsoft.Maui.Controls;
+﻿using Early_Dev_vs.src;
 
 namespace Early_Dev_vs.src
 {
     public partial class MainPage : ContentPage
     {
-        int count = 0;
-
         public MainPage()
         {
             InitializeComponent();
         }
 
-        private void OnCounterClicked(object sender, EventArgs e)
+        private async void OnStudentProfilesTapped(object sender, EventArgs e)
         {
-            count++;
-
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
-
-            SemanticScreenReader.Announce(CounterBtn.Text);
+            await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
         }
-    }
 
+        private async void OnLessonStartTapped(object sender, EventArgs e)
+        {
+            await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
+        }
+
+        private async void OnReportsTapped(object sender, EventArgs e)
+        {
+            await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
+        }
+
+        private async void OnTestManagementTapped(object sender, EventArgs e)
+        {
+            await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
+        }
+
+        private async void OnSettingsTapped(object sender, EventArgs e)
+        {
+            await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
+        }
+
+
+    }
 }
