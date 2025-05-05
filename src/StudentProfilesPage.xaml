@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Early_Dev_vs.src.StudentProfilesPage">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+
+            <!-- Create New Student Profile Tile -->
+            <Frame CornerRadius="10"
+                   Padding="10"
+                   BackgroundColor="LightGray">
+                <Label Text="Create New Student Profile"
+                       FontSize="20"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnCreateStudentTapped"/>
+                </Frame.GestureRecognizers>
+            </Frame>
+
+            <!-- Hidden Profile Creation Form (Initially Collapsed) -->
+            <StackLayout x:Name="CreateStudentForm" IsVisible="False" Padding="10">
+                <Entry x:Name="StudentNameEntry" Placeholder="Student Name"/>
+                <Entry x:Name="StudentAgeEntry" Placeholder="Age" Keyboard="Numeric"/>
+                <Entry x:Name="BCBANameEntry" Placeholder="Assigned BCBA"/>
+                <Entry x:Name="EducationLevelEntry" Placeholder="Education Level"/>
+                <Label x:Name="StudentIDLabel" Text="Student ID: Auto-Generated" FontSize="14"/>
+                <Button Text="Save" BackgroundColor="DarkBlue" TextColor="White" Clicked="OnSaveStudent"/>
+                <Button Text="Cancel" BackgroundColor="Gray" TextColor="White" Clicked="OnCancelStudent"/>
+            </StackLayout>
+
+            <!-- Search Student Profiles Tile -->
+            <Frame CornerRadius="10"
+                   Padding="10"
+                   BackgroundColor="LightGray">
+                <Label Text="Search Student Profiles"
+                       FontSize="20"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnSearchStudentTapped"/>
+                </Frame.GestureRecognizers>
+            </Frame>
+
+            <!-- Hidden Search Form (Initially Collapsed) -->
+            <StackLayout x:Name="SearchStudentForm" IsVisible="False" Padding="10">
+                <Entry x:Name="SearchStudentEntry" Placeholder="Search by Name"/>
+                <Button Text="Find Student" BackgroundColor="DarkBlue" TextColor="White" Clicked="OnFindStudent"/>
+            </StackLayout>
+
+            <!-- Dynamic Student Details (Appears when profile is selected) -->
+            <StackLayout x:Name="StudentDetailsSection" IsVisible="False" Padding="10">
+                <Label x:Name="StudentNameLabel" Text="Name: " FontSize="16"/>
+                <Label x:Name="StudentAgeLabel" Text="Age: " FontSize="16"/>
+                <Label x:Name="BCBANameLabel" Text="Assigned BCBA: " FontSize="16"/>
+                <Label x:Name="EducationLevelLabel" Text="Education Level: " FontSize="16"/>
+                <Button Text="Close Profile" Clicked="OnCloseProfile"/>
+            </StackLayout>
+
+            <!-- Let's Learn Tile (Appears when student profile is selected) -->
+            <Frame x:Name="LetsLearnTile" IsVisible="False"
+                   CornerRadius="10"
+                   Padding="10"
+                   BackgroundColor="LightGray">
+                <Label Text="Let’s Learn"
+                       FontSize="20"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnLetsLearnTapped"/>
+                </Frame.GestureRecognizers>
+            </Frame>
+
+            <!-- Reports Tile (Appears when student profile is selected) -->
+            <Frame x:Name="ReportsTile" IsVisible="False"
+                   CornerRadius="10"
+                   Padding="10"
+                   BackgroundColor="LightGray">
+                <Label Text="Reports"
+                       FontSize="20"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnReportsTapped"/>
+                </Frame.GestureRecognizers>
+            </Frame>
+
+            <!-- IAP Tile (Appears when student profile is selected) -->
+            <Frame x:Name="IAPTile" IsVisible="False"
+                   CornerRadius="10"
+                   Padding="10"
+                   BackgroundColor="LightGray">
+                <Label Text="IAP - Individualized Action Plan"
+                       FontSize="20"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center"/>
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnIAPTapped"/>
+                </Frame.GestureRecognizers>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

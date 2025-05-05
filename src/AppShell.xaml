@@ -19,12 +19,12 @@
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 
-    <!-- Student Profiles Page 
+    <!-- Student Profiles Page -->
     <ShellContent
         Title="Student Profiles"
         ContentTemplate="{DataTemplate local:StudentProfilesPage}"
         Route="StudentProfilesPage" />
-
+    <!-- 
      //Lesson Selection Page 
     <ShellContent
         Title="Let’s Learn"
