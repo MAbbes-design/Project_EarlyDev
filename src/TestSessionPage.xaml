@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Early_Dev_vs.src.TestSessionPage">
+
+    <VerticalStackLayout Padding="20" Spacing="20">
+
+        <!-- Student Name Display -->
+        <Label x:Name="studentNameLabel"
+               Text="Student Name"
+               FontSize="24"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"/>
+
+        <!-- Lesson Question -->
+        <Label x:Name="LessonQuestionLabel"
+               Text="Lesson Question Here"
+               FontSize="18"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"/>
+        
+        <!-- Multi-Image Question (with tappable boxes) -->
+
+        <CollectionView x:Name="ImageCollectionView"
+                ItemsSource="{Binding ImageSources}"
+                SelectionMode="Multiple">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame CornerRadius="10"
+                   Padding="10"
+                   BackgroundColor="LightGray">
+                        <Image Source="{Binding .}"
+                       HeightRequest="200"
+                       Aspect="AspectFit"/>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnImageTapped"/>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                </DataTemplate>
+               </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Prompt Type Selection -->
+        <Label Text="Select Prompt Type:" FontSize="16" FontAttributes="Bold"/>
+        <VerticalStackLayout>
+            <RadioButton x:Name="PhysicalPrompt" Content="Physical"/>
+            <RadioButton x:Name="VerbalPrompt" Content="Verbal"/>
+            <RadioButton x:Name="GesturePrompt" Content="Gesture"/>
+            <RadioButton x:Name="PartialPhysicalPrompt" Content="Partial Physical"/>
+            <RadioButton x:Name="IndependentPrompt" Content="Independent"/>
+        </VerticalStackLayout>
+
+        <!-- Student Response Buttons -->
+        <HorizontalStackLayout Spacing="15">
+            <Frame CornerRadius="10" Padding="10" BackgroundColor="Green">
+                <Label Text="Correct" TextColor="White"/>
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnCorrectTapped"/>
+                </Frame.GestureRecognizers>
+            </Frame>
+            <Frame CornerRadius="10" Padding="10" BackgroundColor="Red">
+                <Label Text="Incorrect" TextColor="White"/>
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnIncorrectTapped"/>
+                </Frame.GestureRecognizers>
+            </Frame>
+            <Frame CornerRadius="10" Padding="10" BackgroundColor="Gray">
+                <Label Text="No Response" TextColor="White"/>
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnNoResponseTapped"/>
+                </Frame.GestureRecognizers>
+            </Frame>
+        </HorizontalStackLayout>
+
+        <!-- Retry, Auto-Save, End Test, and Next Question Actions -->
+        <HorizontalStackLayout Spacing="15">
+            <Frame CornerRadius="10" Padding="10" BackgroundColor="Orange">
+                <Label Text="Retry Question" TextColor="White"/>
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnRetryTapped"/>
+                </Frame.GestureRecognizers>
+            </Frame>
+            <Frame CornerRadius="10" Padding="10" BackgroundColor="Blue">
+                <Label Text="Auto-Save" TextColor="White"/>
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnAutoSaveTapped"/>
+                </Frame.GestureRecognizers>
+            </Frame>
+            <Frame CornerRadius="10" Padding="10" BackgroundColor="DarkGreen">
+                <Label Text="End Test" TextColor="White"/>
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnEndTestTapped"/>
+                </Frame.GestureRecognizers>
+            </Frame>
+            <Frame CornerRadius="10" Padding="10" BackgroundColor="Purple">
+                <Label Text="➡️ Next Question" TextColor="White"/>
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnNextQuestionTapped"/>
+                </Frame.GestureRecognizers>
+            </Frame>
+        </HorizontalStackLayout>
+
+    </VerticalStackLayout>
+
+</ContentPage>

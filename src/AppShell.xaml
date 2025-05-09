@@ -24,13 +24,13 @@
         Title="Student Profiles"
         ContentTemplate="{DataTemplate local:StudentProfilesPage}"
         Route="StudentProfilesPage" />
-    <!-- 
-     //Lesson Selection Page 
+    
+    <!-- //Lesson Selection Page -->
     <ShellContent
         Title="Let’s Learn"
-        ContentTemplate="{DataTemplate local:LessonSelectionPage}"
-        Route="LessonSelectionPage" />
-
+        ContentTemplate="{DataTemplate local:TestSessionPage}"
+        Route="TestSessionPage" />
+    <!-- 
     //Reports Page 
     <ShellContent
         Title="Reports"
