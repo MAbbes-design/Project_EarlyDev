@@ -1,5 +1,6 @@
-using Early_Dev_vs.src;
+﻿using Early_Dev_vs.src;
 using Microsoft.Maui.Controls;
+using System.Diagnostics;
 using static Early_Dev_vs.src.DataModels;
 
 namespace Early_Dev_vs.src
@@ -45,6 +46,14 @@ namespace Early_Dev_vs.src
             if (App.Database != null)
             {
                 await App.Database.AddStudentAsync(student);
+
+                //  Check if the student exists after saving
+                var savedStudent = await App.Database.GetStudentByIdAsync(student.Id);
+                Debug.WriteLine(savedStudent != null
+                    ? $"Student Verified in DB - ID: {savedStudent.Id}, Name: {savedStudent.Name}"
+                    : $"Student NOT found in DB immediately after save!");
+
+                App.SetActiveStudent(student.Id);
             }
             else
             {
@@ -89,13 +98,13 @@ namespace Early_Dev_vs.src
 
             if (matchedStudent != null)
             {
-                StudentDetailsSection.IsVisible = true; // Show profile after search
-                ShowStudentProfile(
-                    matchedStudent?.Name ?? "Unknown",
-                    matchedStudent?.Age.ToString() ?? "N/A",
-                    matchedStudent?.BCBA ?? "Not Provided",
-                    matchedStudent?.EducationLevel ?? "Not Specified"
-                );
+                App.SetActiveStudent(matchedStudent.Id); // Set active student
+
+                // Ensure `studentName` is never null by providing a default value
+                string studentName = matchedStudent.Name ?? "Unknown Student";
+
+                StudentDetailsSection.IsVisible = true;
+                ShowStudentProfile(studentName, matchedStudent.Age.ToString(), matchedStudent.BCBA ?? "Not Provided", matchedStudent.EducationLevel ?? "Not Specified");
             }
             else
             {
@@ -103,6 +112,7 @@ namespace Early_Dev_vs.src
             }
             SearchStudentEntry.Text = string.Empty;
         }
+
 
         // Display Student Profile (Example placeholder)
         private void ShowStudentProfile(string studentName, string age, string bcba, string education)
@@ -121,9 +131,32 @@ namespace Early_Dev_vs.src
         // Navigation to Let's Learn Page
         private async void OnLetsLearnTapped(object sender, EventArgs e)
         {
-            await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
-            //await Navigation.PushAsync(new LessonSelectionPage());
+            if (!App.ActiveStudentId.HasValue) //  Ensure a student ID is available
+            {
+                await DisplayAlert("Select a Student", "Please choose a student before starting!", "OK");
+                return;
+            }
+
+            int studentId = App.ActiveStudentId.Value; // Safely retrieve value
+
+            if (App.Database == null) //  Ensure the database is initialized
+            {
+                await DisplayAlert("Error", "Database is not initialized!", "OK");
+                return;
+            }
+
+            var student = await App.Database.GetStudentByIdAsync(studentId); //  Fetch student safely
+
+            if (student != null && !string.IsNullOrWhiteSpace(student.Name))
+            {
+                await Navigation.PushAsync(new TestSessionPage(App.dbPath, studentId, student.Name));
+            }
+            else
+            {
+                await DisplayAlert("Error", "Selected student has no name saved in the database!", "OK");
+            }
         }
+
 
         // Navigation to Reports Page
         private async void OnReportsTapped(object sender, EventArgs e)
@@ -146,5 +179,13 @@ namespace Early_Dev_vs.src
             ReportsTile.IsVisible = false;
             IAPTile.IsVisible = false;
         }
+        private async void OnStudentSelected(int studentId, string studentName)
+        {
+            App.SetActiveStudent(studentId); // Set active student
+            Debug.WriteLine($"Active Student Set: {studentId}, Name: {studentName}");
+
+            await Navigation.PushAsync(new TestSessionPage(App.dbPath, studentId, studentName)); // Pass student name to the test session
+        }
+
     }
 }
