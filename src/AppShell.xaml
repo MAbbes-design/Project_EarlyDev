@@ -30,19 +30,20 @@
         Title="Let’s Learn"
         ContentTemplate="{DataTemplate local:TestSessionPage}"
         Route="TestSessionPage" />
+
+    <!-- Test Management Page -->
+    <ShellContent
+        Title="Test Management"
+        ContentTemplate="{DataTemplate local:TestManagementPage}"
+        Route="TestManagementPage" />
+    
     <!-- 
     //Reports Page 
     <ShellContent
         Title="Reports"
         ContentTemplate="{DataTemplate local:ReportsPage}"
         Route="ReportsPage" />
-
-    //Test Management Page
-    <ShellContent
-        Title="Test Management"
-        ContentTemplate="{DataTemplate local:TestManagementPage}"
-        Route="TestManagementPage" />
-
+    
      //Settings Page 
     <ShellContent
         Title="Settings"

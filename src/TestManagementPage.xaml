@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Early_Dev_vs.src.TestManagementPage">
+    <!--Title="Test Management"> -->
+
+    <ScrollView x:Name="pageScrollView">
+        <VerticalStackLayout Spacing="15" Padding="20">
+            <!-- Page Header -->
+            <Label Text="Test Management" 
+                   FontSize="28" 
+                   FontAttributes="Bold" 
+                   HorizontalOptions="Start" 
+                   Margin="0,0,0,20"/>
+
+            <!-- Create New Question Section -->
+            <Frame BorderColor="#DDDDDD" Padding="15" CornerRadius="5">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="Create New Question" 
+                           FontSize="20" 
+                           FontAttributes="Bold"/>
+
+                    <!-- Question Type -->
+                    <Label Text="Question Type:" FontAttributes="Bold"/>
+                    <Picker x:Name="QuestionTypePicker" 
+                            Title="Select Question Type">
+                        <!-- SelectedIndexChanged="OnQuestionTypeChanged"> -->
+                        <Picker.Items>
+                            <x:String>Multiple Choice</x:String>
+                            <x:String>True/False</x:String>
+                            <x:String>Text Entry</x:String>
+                        </Picker.Items>
+                    </Picker>
+
+                    <!-- Question Text -->
+                    <Label Text="Question Text:" FontAttributes="Bold"/>
+                    <Editor x:Name="QuestionTextEditor" 
+                            Placeholder="Enter your question here..."
+                            HeightRequest="100" 
+                            AutoSize="TextChanges"/>
+
+                    <!-- Correct Answer -->
+                    <Label Text="Correct Answer:" FontAttributes="Bold"/>
+                    <Entry x:Name="CorrectAnswerEntry" 
+                           Placeholder="Enter the correct answer"/>
+
+                    <!-- Image Upload Section -->
+                    <Label Text="Upload Images:" FontAttributes="Bold"/>
+                    <Button x:Name="UploadImageButton" 
+                            Text="Select Images" 
+                            Clicked="OnUploadImageClicked"/>
+
+                    <!-- Selected Images Display -->
+                    <Label Text="Selected Images:" FontAttributes="Bold"/>
+                    <CollectionView x:Name="SelectedImagesCollection" 
+                                    HeightRequest="120" 
+                                    EmptyView="No images selected">
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10"/>
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="100"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Image Source="{Binding}" 
+                                           Aspect="AspectFill" 
+                                           HeightRequest="100" 
+                                           WidthRequest="100"/>
+                                    <Button Grid.Row="0" 
+                                            Text="X" 
+                                            BackgroundColor="#80FF0000" 
+                                            HorizontalOptions="End" 
+                                            VerticalOptions="Start"
+                                            HeightRequest="30" 
+                                            WidthRequest="30" 
+                                            Padding="0"
+                                            FontSize="12"
+                                            Clicked="OnRemoveImageClicked"
+                                            CommandParameter="{Binding}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+
+                    <!-- Action Buttons -->
+                    <HorizontalStackLayout Spacing="10" HorizontalOptions="Start">
+                        <Button x:Name="SaveQuestionButton" 
+                                Text="Save Question" 
+                                BackgroundColor="#4CAF50" 
+                                TextColor="White"
+                                Clicked="OnSaveQuestionClicked"/>
+                        <Button x:Name="CancelButton" 
+                                Text="Cancel" 
+                                BackgroundColor="#F44336" 
+                                TextColor="White"
+                                Clicked="OnCancelClicked"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- View All Questions Section -->
+            <Frame BorderColor="#DDDDDD" Padding="15" CornerRadius="5">
+                <VerticalStackLayout Spacing="15">
+                    <HorizontalStackLayout HorizontalOptions="Fill">
+                        <Label Text="All Questions" 
+                               FontSize="20" 
+                               FontAttributes="Bold"
+                               HorizontalOptions="StartAndExpand"/>
+                        <Button x:Name="RefreshQuestionsButton" 
+                                Text="Refresh" 
+                                Clicked="OnRefreshQuestionsClicked"
+                                HorizontalOptions="End"/>
+                    </HorizontalStackLayout>
+
+                    <!-- Questions List -->
+                    <CollectionView x:Name="QuestionsCollectionView" 
+                                    EmptyView="No questions available. Create one above!"
+                                    SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Margin="0,5" BorderColor="#EEEEEE" Padding="10">
+                                    <Grid ColumnDefinitions="*, Auto">
+                                        <VerticalStackLayout Grid.Column="0" Spacing="5">
+                                            <Label Text="{Binding QuestionText}" 
+                                                   FontAttributes="Bold"/>
+                                            <Label Text="{Binding AnswerType, StringFormat='Type: {0}'}" 
+                                                   TextColor="#666666" 
+                                                   FontSize="14"/>
+                                            <Label Text="{Binding CorrectAnswer, StringFormat='Answer: {0}'}" 
+                                                   TextColor="#666666" 
+                                                   FontSize="14"/>
+                                        </VerticalStackLayout>
+                                        <HorizontalStackLayout Grid.Column="1" Spacing="5" VerticalOptions="Center">
+                                            <Button Text="Edit" 
+                                                    FontSize="12" 
+                                                    HeightRequest="35" 
+                                                    WidthRequest="60"
+                                                    Clicked="OnEditQuestionClicked" 
+                                                    CommandParameter="{Binding Id}"/>
+                                            <Button Text="Delete" 
+                                                    FontSize="12" 
+                                                    HeightRequest="35" 
+                                                    WidthRequest="70"
+                                                    BackgroundColor="#F44336" 
+                                                    TextColor="White"
+                                                    Clicked="OnDeleteQuestionClicked" 
+                                                    CommandParameter="{Binding Id}"/>
+                                        </HorizontalStackLayout>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Back to Dashboard Button -->
+            <Button x:Name="BackToDashboardButton" 
+                    Text="Back to Dashboard" 
+                    Margin="0,20,0,20"
+                    Clicked="OnBackToDashboardClicked"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
