@@ -11,6 +11,7 @@ namespace Early_Dev_vs.src
 {
     public class DataModels
     {
+        // Student profile model for the database
         public class StudentProfile
         {
             [PrimaryKey, AutoIncrement]
@@ -25,7 +26,7 @@ namespace Early_Dev_vs.src
             public int IncompleteSessions { get; set; }  // Lessons left unfinished
             public StudentProfile() { } //add a parameterless constructor for SQLite 
         }
-        // Define Question Model for TestSessionPage
+        // Define Question Model for TestSessionPage - database model for questions
         public class QuestionModel
         {
             [PrimaryKey, AutoIncrement]
@@ -33,20 +34,23 @@ namespace Early_Dev_vs.src
             public string? QuestionText { get; set; } // Question Content
             public string? AnswerType { get; set; }  // Answer Type (Multiple Choice, True/False, etc.)
             public string? CorrectAnswer { get; set; }  // Correct Answer for evaluation
-            public string ImageSourcesJson { get; set; } = "[]"; // Store ImageSources as a JSON string
+            public string ImageSourcesString { get; set; } = ""; // Store ImageSources as a comma-separated string
+
             [Ignore]
-            public List<string> ImageSources // Convert JSON to List<string> when accessing images
+            public List<string> ImageSources // Convert comma-separated string to List<string> when accessing images
             {
-                get => JsonConvert.DeserializeObject<List<string>>(ImageSourcesJson ?? "[]") ?? new List<string>();
-                set => ImageSourcesJson = JsonConvert.SerializeObject(value);
+                get => (ImageSourcesString ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+                set => ImageSourcesString = string.Join(",", value);
             }
+
             public QuestionModel()
             {
-                ImageSources = new List<string>(); // Initialize empty image list
+                ImageSourcesString = ""; // Initialize empty string to prevent null issues
+                ImageSources = new List<string>(); // Ensure the list is initialized
             }
         }
 
-        // Test sessions
+        // Test sessions database model
         public class TestSessionRecord
         {
             [PrimaryKey, AutoIncrement]
@@ -56,7 +60,17 @@ namespace Early_Dev_vs.src
             public string? ResponseType { get; set; } // Correct, Incorrect, No Response
             public string? PromptUsed { get; set; } // Selected prompt type
             public DateTime Timestamp { get; set; } // When the response was recorded
-            public int RetryCount { get; set; } // model to allow recording of how many times the retry button was pressed
+            public int CurrentQuestionId { get; set; } // Track the active question being answered
+        }
+
+        // Question retry count model for a separate table in the db
+        public class QuestionRetryRecord
+        {
+            [PrimaryKey, AutoIncrement]
+            public int Id { get; set; } // Unique retry record ID
+            public int SessionId { get; set; } // Link to the TestSessionRecord
+            public int QuestionId { get; set; } // Link to the Question
+            public int RetryCount { get; set; } // Number of retries for this question
         }
 
     }

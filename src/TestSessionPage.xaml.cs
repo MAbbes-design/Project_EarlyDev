@@ -10,6 +10,7 @@ namespace Early_Dev_vs.src
         private readonly DbService? _dbService; // DB connection instance to grab new questions
         private Dictionary<string, bool> selectedImages = new Dictionary<string, bool>();
         private TestSessionRecord? _currentSessionRecord; // track the active test session for recording purposes
+        private int _currentStudentId; // Store the current student ID
 
         public TestSessionPage(string dbPath, int studentId, string studentName)
         {
@@ -20,13 +21,51 @@ namespace Early_Dev_vs.src
                 return;
             }
             _dbService = App.Database; // assign and initialise the connection to the DB
+            _currentStudentId = studentId; // Store student ID for later use
 
             studentNameLabel.Text = studentName;
 
-            _ = LoadStudentNameAsync(studentId); // method to fetch student
-            _ = LoadQuestion(); // load a new question
+            // Initialize tasks in sequence to ensure session is created before loading questions
+            _ = InitializeAndLoadDataAsync(studentId);
         }
 
+        // Method to properly sequence our async operations
+        private async Task InitializeAndLoadDataAsync(int studentId)
+        {
+            // First initialize the session
+            await InitializeSessionRecordAsync();
+
+            // Then load student data
+            await LoadStudentNameAsync(studentId);
+
+            // Finally load the first question
+            await LoadQuestion();
+        }
+
+        // Initialize the session record early to ensure it's available for all operations
+        private async Task InitializeSessionRecordAsync()
+        {
+            if (App.Database == null)
+            {
+                Debug.WriteLine("ERROR: Database not initialized!");
+                await DisplayAlert("Error", "Database connection is missing!", "OK");
+                return;
+            }
+
+            // Create a new session record on page initialization
+            _currentSessionRecord = new TestSessionRecord
+            {
+                StudentId = _currentStudentId,
+                ResponseType = "Session Started",
+                PromptUsed = "None",
+                Timestamp = DateTime.UtcNow,
+                CurrentQuestionId = -1 // Will be updated when first question loads
+            };
+
+            // Save the session record to get its ID
+            await App.Database.SaveTestSessionAsync(_currentSessionRecord);
+            Debug.WriteLine($"New session initialized with ID: {_currentSessionRecord.Id} for student {_currentStudentId}");
+        }
 
         // Load question dynamically from the database
         private async Task LoadQuestion()
@@ -47,6 +86,30 @@ namespace Early_Dev_vs.src
 
             LessonQuestionLabel.Text = currentQuestion.QuestionText; // Set question text
             ImageCollectionView.ItemsSource = currentQuestion.ImageSources; // Bind images
+
+            // Reset image selections for new question
+            selectedImages.Clear();
+
+            if (_currentSessionRecord != null)
+            {
+                _currentSessionRecord.CurrentQuestionId = currentQuestion.Id;
+                // Update the session record in the database with the new question ID
+                if (App.Database != null)
+                {
+                    await App.Database.UpdateSessionRecordAsync(_currentSessionRecord);
+                    Debug.WriteLine($"New Question Loaded! Question ID: {currentQuestion.Id} in Session ID: {_currentSessionRecord.Id}");
+                }
+                else
+                {
+                    Debug.WriteLine("ERROR: Cannot update session record - Database is null");
+                }
+            }
+            else
+            {
+                Debug.WriteLine("Warning: No active session record found! Question ID could not be set.");
+                // Try to initialize a session record if it doesn't exist
+                await InitializeSessionRecordAsync();
+            }
         }
 
         // Handle Tapping on an Image
@@ -76,22 +139,26 @@ namespace Early_Dev_vs.src
         // Handle "Correct" Response
         private async void OnCorrectTapped(object sender, EventArgs e)
         {
-            await DisplayAlert("Response Recorded", "Student response:  Correct", "OK");
-            SaveSessionData("Correct");
+            await RecordResponse("Correct");
         }
 
         // Handle "Incorrect" Response
         private async void OnIncorrectTapped(object sender, EventArgs e)
         {
-            await DisplayAlert("Response Recorded", "Student response:  Incorrect", "OK");
-            SaveSessionData("Incorrect");
+            await RecordResponse("Incorrect");
         }
 
         // Handle "No Response"
         private async void OnNoResponseTapped(object sender, EventArgs e)
         {
-            await DisplayAlert("Response Recorded", "Student response:  No Response", "OK");
-            SaveSessionData("No Response");
+            await RecordResponse("No Response");
+        }
+
+        // Consolidated method to record responses and handle UI feedback
+        private async Task RecordResponse(string responseType)
+        {
+            await SaveSessionData(responseType);
+            await DisplayAlert("Response Recorded", $"Student response: {responseType}", "OK");
         }
 
         // Get Selected Prompt Type
@@ -108,23 +175,82 @@ namespace Early_Dev_vs.src
         // Handle "Retry Question"
         private async void OnRetryTapped(object sender, EventArgs e)
         {
-            if (_currentSessionRecord == null) // why does this cause so many errors, there IS data in there
+            await RecordRetry();
+        }
+
+        // Dedicated method to handle retry logic
+        private async Task RecordRetry()
+        {
+            if (_currentSessionRecord == null || _currentSessionRecord.Id == 0)
             {
                 await DisplayAlert("Error", "No active session to update.", "OK");
                 return;
             }
 
-            // Ensure App.Database is initialized before updating
-            if (App.Database == null) // more null checks
+            if (App.Database == null)
             {
                 await DisplayAlert("Error", "Database is not initialized!", "OK");
                 return;
             }
 
-            _currentSessionRecord.RetryCount++;
-            await App.Database.UpdateSessionRecordAsync(_currentSessionRecord); // Safe update
-        }
+            string promptType = GetSelectedPromptType();
 
+            // Prevent saving if no prompt type is selected
+            if (promptType == "None")
+            {
+                await DisplayAlert("Selection Required", "Please select a prompt type before retrying the question.", "OK");
+                return;
+            }
+
+            // Ensure we have a valid question ID stored in the session record
+            if (_currentSessionRecord.CurrentQuestionId <= 0)
+            {
+                await DisplayAlert("Error", "No active question found for retry.", "OK");
+                return;
+            }
+
+            // Get existing retry record for this question in the session
+            var retryRecord = await App.Database.GetRetryRecordAsync(_currentSessionRecord.Id, _currentSessionRecord.CurrentQuestionId);
+
+            if (retryRecord == null)
+            {
+                // Create a new retry entry if none exists
+                retryRecord = new QuestionRetryRecord
+                {
+                    SessionId = _currentSessionRecord.Id,
+                    QuestionId = _currentSessionRecord.CurrentQuestionId,
+                    RetryCount = 1
+                };
+
+                await App.Database.AddRetryRecordAsync(retryRecord);
+            }
+            else
+            {
+                // Increment retry count for this question
+                retryRecord.RetryCount++;
+                await App.Database.UpdateRetryRecordAsync(retryRecord);
+            }
+
+            // Update the current session record with "Retry" response type
+            _currentSessionRecord.ResponseType = "Retry";
+            _currentSessionRecord.PromptUsed = promptType;
+            _currentSessionRecord.Timestamp = DateTime.UtcNow;
+
+            // Null check before accessing App.Database
+            if (App.Database != null)
+            {
+                await App.Database.UpdateSessionRecordAsync(_currentSessionRecord);
+            }
+            else
+            {
+                Debug.WriteLine("ERROR: Cannot update session record - Database is null");
+                await DisplayAlert("Error", "Database connection is missing!", "OK");
+                return;
+            }
+
+            Debug.WriteLine($"Retry recorded! Session ID: {_currentSessionRecord.Id}, Question ID: {_currentSessionRecord.CurrentQuestionId}, Current Retry Count: {retryRecord.RetryCount}, Prompt Type: {promptType}");
+            await DisplayAlert("Retry Recorded", $"Question retry count: {retryRecord.RetryCount}", "OK");
+        }
 
         // Handle "End Test"
         private async void OnEndTestTapped(object sender, EventArgs e)
@@ -135,7 +261,7 @@ namespace Early_Dev_vs.src
         }
 
         // Save session data (Placeholder for database integration)
-        private async void SaveSessionData(string responseType)
+        private async Task SaveSessionData(string responseType)
         {
             string promptType = GetSelectedPromptType();
 
@@ -158,47 +284,59 @@ namespace Early_Dev_vs.src
             {
                 _currentSessionRecord = new TestSessionRecord
                 {
-                    StudentId = App.ActiveStudentId ?? -1, // Assign active student or default ID
+                    StudentId = _currentStudentId,
                     ResponseType = responseType,
                     PromptUsed = promptType,
                     Timestamp = DateTime.UtcNow,
-                    RetryCount = responseType == "Retry" ? 1 : 0 // Initialize retry count if it's a retry
+                    CurrentQuestionId = GetActiveQuestionId() // Store the active question ID
                 };
 
                 await App.Database.SaveTestSessionAsync(_currentSessionRecord); // Save new session record
+                Debug.WriteLine($"Created new session record with ID: {_currentSessionRecord.Id}");
             }
-            else if (responseType == "Retry") // If retry, update retry count
+            else
             {
-                _currentSessionRecord.RetryCount++; // Increment retry count
-                await App.Database.UpdateSessionRecordAsync(_currentSessionRecord); // Save updated record
+                // Update existing session record
+                _currentSessionRecord.ResponseType = responseType;
+                _currentSessionRecord.PromptUsed = promptType;
+                _currentSessionRecord.Timestamp = DateTime.UtcNow;
+
+                // Null check before accessing App.Database
+                if (App.Database != null)
+                {
+                    await App.Database.UpdateSessionRecordAsync(_currentSessionRecord);
+                    Debug.WriteLine($"Updated session record ID: {_currentSessionRecord.Id}");
+                }
+                else
+                {
+                    Debug.WriteLine("ERROR: Cannot update session record - Database is null");
+                    await DisplayAlert("Error", "Database connection is missing!", "OK");
+                    return;
+                }
             }
 
-            Debug.WriteLine($"Session saved: Student {App.ActiveStudentId}, Response: {responseType}, Prompt: {promptType}, Retries: {_currentSessionRecord?.RetryCount}");
+            // Debugging output for validation
+            Debug.WriteLine($"Session data saved: Student {_currentStudentId}, Response: {responseType}, Prompt: {promptType}, Question ID: {_currentSessionRecord.CurrentQuestionId}");
         }
 
+        private int GetActiveQuestionId()
+        {
+            // Ensure the current session has an active question
+            if (_currentSessionRecord != null && _currentSessionRecord.CurrentQuestionId > 0)
+            {
+                return _currentSessionRecord.CurrentQuestionId; // Return stored question ID
+            }
+
+            Debug.WriteLine("Warning: No active question found! Defaulting to -1.");
+            return -1; // Return a default value if no question is active
+        }
 
         // move on to next question once this question is complete, or use this button to skip current question.
         private async void OnNextQuestionTapped(object sender, EventArgs e)
         {
-            if (_dbService == null)
-            {
-                Debug.WriteLine("ERROR: Database service not initialized!");
-                await DisplayAlert("Error", "Database connection is missing!", "OK");
-                return;
-            }
-
-            QuestionModel nextQuestion = await _dbService.GetRandomQuestionAsync(); // Fetch next question
-
-            if (nextQuestion == null)
-            {
-                await DisplayAlert("No More Questions", "There are no more questions available.", "OK");
-                return;
-            }
-
-            LessonQuestionLabel.Text = nextQuestion.QuestionText;
-            ImageCollectionView.ItemsSource = nextQuestion.ImageSources;
-            selectedImages.Clear(); // Reset selections
+            await LoadQuestion(); // Use the existing LoadQuestion method to get the next question
         }
+
         // Load student name from DB
         private async Task LoadStudentNameAsync(int studentId)
         {
@@ -219,9 +357,12 @@ namespace Early_Dev_vs.src
                 //await Navigation.PopAsync();
             }
         }
-    }
-    public class QuestionImageModel
-    {
-        public string? ImageSource { get; set; }
+
+        // Handle Auto-Saves
+        private async void OnAutoSaveTapped(object sender, EventArgs e)
+        {
+            await SaveSessionData("Auto-Save");
+            await DisplayAlert("Auto-Save", "Session data saved successfully!", "OK");
+        }
     }
 }

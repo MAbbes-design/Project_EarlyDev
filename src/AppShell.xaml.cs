@@ -13,8 +13,8 @@ namespace Early_Dev_vs.src
             Routing.RegisterRoute(nameof(MainPage), typeof(MainPage));
             Routing.RegisterRoute(nameof(StudentProfilesPage), typeof(StudentProfilesPage));
             Routing.RegisterRoute(nameof(TestSessionPage), typeof(TestSessionPage));
+            Routing.RegisterRoute(nameof(TestManagementPage), typeof(TestManagementPage));
             //Routing.RegisterRoute(nameof(ReportsPage), typeof(ReportsPage));
-            //Routing.RegisterRoute(nameof(TestManagementPage), typeof(TestManagementPage));
             //Routing.RegisterRoute(nameof(SettingsPage), typeof(SettingsPage));
         }
     }

@@ -52,7 +52,9 @@ namespace Early_Dev_vs.src
 
         private async void OnTestManagementTapped(object sender, EventArgs e)
         {
-            await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
+            await Navigation.PushAsync(new TestManagementPage(App.Database!));
+            //await Navigation.PushAsync(new TestManagementPage());
+            //await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
         }
 
         private async void OnSettingsTapped(object sender, EventArgs e)

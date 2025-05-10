@@ -20,6 +20,7 @@ namespace Early_Dev_vs.src
             _database = new SQLiteAsyncConnection(dbPath);
             _database.CreateTableAsync<StudentProfile>().Wait();  // Initialize StudentProfiles table
             _database.CreateTableAsync<QuestionModel>().Wait();  // Initialize Questions table
+            _database.CreateTableAsync<QuestionRetryRecord>().Wait(); // Ensure retry records table exists
         }
 
         // ===================== Student CRUD =====================
@@ -59,6 +60,7 @@ namespace Early_Dev_vs.src
         // Create a new test question
         public async Task<int> AddQuestionAsync(QuestionModel question)
         {
+            question.ImageSourcesString = string.Join(",", question.ImageSources); // Ensure string is updated
             return await _database.InsertAsync(question);
         }
 
@@ -78,10 +80,12 @@ namespace Early_Dev_vs.src
                 QuestionText = "No questions available",
                 AnswerType = "Default",
                 CorrectAnswer = "",
-                ImageSources = new List<string>() // Images stored as JSON remain intact
+                ImageSources = new List<string>()
             };
 
-            return questions[new Random().Next(questions.Count)];
+            var selectedQuestion = questions[new Random().Next(questions.Count)];
+            selectedQuestion.ImageSources = selectedQuestion.ImageSourcesString.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+            return selectedQuestion;
         }
 
         // Update an existing test question
@@ -115,6 +119,28 @@ namespace Early_Dev_vs.src
         public async Task<int> UpdateSessionRecordAsync(TestSessionRecord sessionRecord)
         {
             return await _database.UpdateAsync(sessionRecord); // Save updated session record, including retry count
+        }
+
+        // ===================== Question Retry Management =====================
+
+        // Add a retry record for a question in a test session
+        public Task<int> AddRetryRecordAsync(QuestionRetryRecord retryRecord)
+        {
+            return _database.InsertAsync(retryRecord);
+        }
+
+        // Updates an existing retry record for a question in a test session.
+        public Task<int> UpdateRetryRecordAsync(QuestionRetryRecord retryRecord)
+        {
+            return _database.UpdateAsync(retryRecord);
+        }
+
+        // Grabs the data for specific question retries.
+        public Task<QuestionRetryRecord> GetRetryRecordAsync(int sessionId, int questionId)
+        {
+            return _database.Table<QuestionRetryRecord>()
+                .Where(r => r.SessionId == sessionId && r.QuestionId == questionId)
+                .FirstOrDefaultAsync();
         }
     }
 }
