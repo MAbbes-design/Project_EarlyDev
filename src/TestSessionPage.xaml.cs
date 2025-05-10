@@ -256,6 +256,7 @@ namespace Early_Dev_vs.src
         private async void OnEndTestTapped(object sender, EventArgs e)
         {
             await DisplayAlert("Test Completed", "Session data saved and test finalized.", "OK");
+            ResetTestSession();
             App.ActiveStudentId = null;
             await Navigation.PopAsync(); // Return to previous page
         }
@@ -364,5 +365,16 @@ namespace Early_Dev_vs.src
             await SaveSessionData("Auto-Save");
             await DisplayAlert("Auto-Save", "Session data saved successfully!", "OK");
         }
+
+        // Clear the test session and reset the question list.
+        private void ResetTestSession()
+        {
+            if (_dbService != null)
+            {
+                _dbService?.ResetTestSession();
+                Debug.WriteLine("Test session has been reset. Questions will start fresh.");
+            }
+        }
+
     }
 }
