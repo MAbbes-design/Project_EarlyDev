@@ -70,21 +70,32 @@ namespace Early_Dev_vs.src
             return _database.Table<QuestionModel>().ToListAsync();
         }
 
+        // need this to get a question by ID, to allow me to search for a random question to show but not repeat in the same session
+        private HashSet<int> _askedQuestionIds = new HashSet<int>();
         // Retrieve a random question for test sessions
         public async Task<QuestionModel> GetRandomQuestionAsync()
         {
             var questions = await _database.Table<QuestionModel>().ToListAsync();
 
-            if (!questions.Any()) return new QuestionModel
+            // Ensure there are available questions
+            var availableQuestions = questions.Where(q => !_askedQuestionIds.Contains(q.Id)).ToList();
+            if (!availableQuestions.Any()) return new QuestionModel
             {
-                QuestionText = "No questions available",
+                QuestionText = "You have reached the end of this test, congratulations! please press End Test to save your progress",
                 AnswerType = "Default",
                 CorrectAnswer = "",
                 ImageSources = new List<string>()
             };
 
-            var selectedQuestion = questions[new Random().Next(questions.Count)];
-            selectedQuestion.ImageSources = selectedQuestion.ImageSourcesString.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+            // Select a random question
+            var selectedQuestion = availableQuestions[new Random().Next(availableQuestions.Count)];
+            _askedQuestionIds.Add(selectedQuestion.Id); // Mark as asked
+
+            // Convert ImageSourcesString to list
+            selectedQuestion.ImageSources = selectedQuestion.ImageSourcesString
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .ToList();
+
             return selectedQuestion;
         }
 
@@ -98,6 +109,13 @@ namespace Early_Dev_vs.src
         public Task<int> DeleteQuestionAsync(QuestionModel question)
         {
             return _database.DeleteAsync(question);
+        }
+
+        // Reset function for the test session, helps to clear the asked questions list.
+        public void ResetTestSession()
+        {
+            _askedQuestionIds.Clear(); // Clears the list of asked questions for the next test session
+            Debug.WriteLine("Test session reset: Questions will start fresh.");
         }
 
         // ===================== Test Session Management =====================
