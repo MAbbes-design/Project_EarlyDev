@@ -142,5 +142,11 @@ namespace Early_Dev_vs.src
                 .Where(r => r.SessionId == sessionId && r.QuestionId == questionId)
                 .FirstOrDefaultAsync();
         }
+
+        // grabs all the records of retries for a question and returns a list of this data for use in the reports page
+        public Task<List<QuestionRetryRecord>> GetAllRetryRecordsAsync()
+        {
+            return _database.Table<QuestionRetryRecord>().ToListAsync();
+        }
     }
 }

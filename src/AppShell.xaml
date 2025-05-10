@@ -37,13 +37,13 @@
         ContentTemplate="{DataTemplate local:TestManagementPage}"
         Route="TestManagementPage" />
     
-    <!-- 
-    //Reports Page 
+    <!-- Reports Page -->
     <ShellContent
         Title="Reports"
         ContentTemplate="{DataTemplate local:ReportsPage}"
         Route="ReportsPage" />
-    
+
+    <!-- 
      //Settings Page 
     <ShellContent
         Title="Settings"

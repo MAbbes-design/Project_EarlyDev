@@ -98,7 +98,7 @@ namespace Early_Dev_vs.src
 
             if (matchedStudent != null)
             {
-                App.SetActiveStudent(matchedStudent.Id); // Set active student
+                App.SetActiveStudent(matchedStudent.Id, matchedStudent); // Set active student
 
                 // Ensure `studentName` is never null by providing a default value
                 string studentName = matchedStudent.Name ?? "Unknown Student";
@@ -161,8 +161,8 @@ namespace Early_Dev_vs.src
         // Navigation to Reports Page
         private async void OnReportsTapped(object sender, EventArgs e)
         {
-            await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
-            //await Navigation.PushAsync(new ReportsPage());
+            //await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
+            await Navigation.PushAsync(new ReportsPage());
         }
 
         // Navigation to IAP Page
@@ -179,6 +179,7 @@ namespace Early_Dev_vs.src
             ReportsTile.IsVisible = false;
             IAPTile.IsVisible = false;
         }
+        // deprecated thus method out, but not deleting it yet, i may need it later.
         private async void OnStudentSelected(int studentId, string studentName)
         {
             App.SetActiveStudent(studentId); // Set active student

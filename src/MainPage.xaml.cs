@@ -47,7 +47,8 @@ namespace Early_Dev_vs.src
 
         private async void OnReportsTapped(object sender, EventArgs e)
         {
-            await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
+            await Navigation.PushAsync(new ReportsPage());
+            //await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
         }
 
         private async void OnTestManagementTapped(object sender, EventArgs e)
