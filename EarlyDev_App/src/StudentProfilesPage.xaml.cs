@@ -149,7 +149,7 @@ namespace Early_Dev_vs.src
 
             if (student != null && !string.IsNullOrWhiteSpace(student.Name))
             {
-                await Navigation.PushAsync(new TestSessionPage(App.dbPath, studentId, student.Name));
+                await Navigation.PushAsync(new LearnSessionPage(App.dbPath, studentId, student.Name));
             }
             else
             {
@@ -185,7 +185,7 @@ namespace Early_Dev_vs.src
             App.SetActiveStudent(studentId); // Set active student
             Debug.WriteLine($"Active Student Set: {studentId}, Name: {studentName}");
 
-            await Navigation.PushAsync(new TestSessionPage(App.dbPath, studentId, studentName)); // Pass student name to the test session
+            await Navigation.PushAsync(new LearnSessionPage(App.dbPath, studentId, studentName)); // Pass student name to the test session
         }
 
     }

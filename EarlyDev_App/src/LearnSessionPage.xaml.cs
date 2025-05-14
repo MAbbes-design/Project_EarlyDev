@@ -5,14 +5,14 @@ using static Early_Dev_vs.src.DataModels;
 
 namespace Early_Dev_vs.src
 {
-    public partial class TestSessionPage : ContentPage
+    public partial class LearnSessionPage : ContentPage
     {
         private readonly DbService? _dbService; // DB connection instance to grab new questions
         private Dictionary<string, bool> selectedImages = new Dictionary<string, bool>();
         private TestSessionRecord? _currentSessionRecord; // track the active test session for recording purposes
         private int _currentStudentId; // Store the current student ID
 
-        public TestSessionPage(string dbPath, int studentId, string studentName)
+        public LearnSessionPage(string dbPath, int studentId, string studentName)
         {
             InitializeComponent();
             if (App.Database == null) // more and more null checks

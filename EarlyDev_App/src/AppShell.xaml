@@ -28,14 +28,14 @@
     <!-- //Lesson Selection Page -->
     <ShellContent
         Title="Let’s Learn"
-        ContentTemplate="{DataTemplate local:TestSessionPage}"
-        Route="TestSessionPage" />
+        ContentTemplate="{DataTemplate local:LearnSessionPage}"
+        Route="LearnSessionPage" />
 
     <!-- Test Management Page -->
     <ShellContent
-        Title="Test Management"
-        ContentTemplate="{DataTemplate local:TestManagementPage}"
-        Route="TestManagementPage" />
+        Title="Question Database Manager"
+        ContentTemplate="{DataTemplate local:QuestionManagementPage}"
+        Route="QuestionManagementPage" />
     
     <!-- Reports Page -->
     <ShellContent
