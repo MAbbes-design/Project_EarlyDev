@@ -70,7 +70,7 @@
                     Padding="10"
                     BackgroundColor="LightGray">
                 <Label 
-                    Text="Test Management"
+                    Text="Question Database Manager"
                     FontSize="20"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"/>

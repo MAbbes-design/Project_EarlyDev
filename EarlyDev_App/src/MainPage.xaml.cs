@@ -36,7 +36,7 @@ namespace Early_Dev_vs.src
 
             if (student != null && !string.IsNullOrWhiteSpace(student.Name))
             {
-                await Navigation.PushAsync(new TestSessionPage(App.dbPath, studentId, student.Name)); //  Navigate to session
+                await Navigation.PushAsync(new LearnSessionPage(App.dbPath, studentId, student.Name)); //  Navigate to session
             }
             else
             {
@@ -53,7 +53,7 @@ namespace Early_Dev_vs.src
 
         private async void OnTestManagementTapped(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new TestManagementPage(App.Database!));
+            await Navigation.PushAsync(new QuestionManagementPage(App.Database!));
             //await Navigation.PushAsync(new TestManagementPage());
             //await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
         }

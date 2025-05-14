@@ -5,7 +5,7 @@ using static Early_Dev_vs.src.DataModels;
 
 namespace Early_Dev_vs.src
 {
-    public partial class TestManagementPage : ContentPage
+    public partial class QuestionManagementPage : ContentPage
     {
         private readonly DbService _dbService; // database instance to interact with the DB
         private ObservableCollection<QuestionModel> _questions; // collection of questions that allows for automatic updates of the UI with a list of our questions.
@@ -14,7 +14,7 @@ namespace Early_Dev_vs.src
         private bool _isEditMode = false; // need this to avoid errors, it tracks whether I am in edit mode or not for any question.
 
         // constructor
-        public TestManagementPage(DbService dbService)
+        public QuestionManagementPage(DbService dbService)
         {
             // initialisers for all components needed in this page. 
             InitializeComponent();
