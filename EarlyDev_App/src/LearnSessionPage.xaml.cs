@@ -9,8 +9,8 @@ namespace Early_Dev_vs.src
     {
         private readonly DbService? _dbService; // DB connection instance to grab new questions
         private Dictionary<string, bool> selectedImages = new Dictionary<string, bool>();
-        private TestSessionRecord? _currentSessionRecord; // track the active test session for recording purposes
-        private int _currentStudentId; // Store the current student ID
+        public TestSessionRecord? _currentSessionRecord; // track the active test session for recording purposes
+        public int _currentStudentId; // Store the current student ID
 
         public LearnSessionPage(string dbPath, int studentId, string studentName)
         {
@@ -30,7 +30,7 @@ namespace Early_Dev_vs.src
         }
 
         // Method to properly sequence our async operations
-        private async Task InitializeAndLoadDataAsync(int studentId)
+        public async Task InitializeAndLoadDataAsync(int studentId)
         {
             // First initialize the session
             await InitializeSessionRecordAsync();
@@ -43,7 +43,7 @@ namespace Early_Dev_vs.src
         }
 
         // Initialize the session record early to ensure it's available for all operations
-        private async Task InitializeSessionRecordAsync()
+        public async Task InitializeSessionRecordAsync()
         {
             if (App.Database == null)
             {
@@ -68,7 +68,7 @@ namespace Early_Dev_vs.src
         }
 
         // Load question dynamically from the database
-        private async Task LoadQuestion()
+        public async Task LoadQuestion()
         {
             if (_dbService == null) // more null checks.
             {
@@ -113,7 +113,7 @@ namespace Early_Dev_vs.src
         }
 
         // Handle Tapping on an Image
-        private void OnImageTapped(object sender, EventArgs e)
+        public void OnImageTapped(object sender, EventArgs e)
         {
             var tappedFrame = sender as Frame;
             if (tappedFrame == null) return; // its a null check
@@ -137,32 +137,32 @@ namespace Early_Dev_vs.src
 
         // Need to record these against the student ID that is linked to the session, on correct, on incorrect, on no response, prompt type, etc.
         // Handle "Correct" Response
-        private async void OnCorrectTapped(object sender, EventArgs e)
+        public async void OnCorrectTapped(object sender, EventArgs e)
         {
             await RecordResponse("Correct");
         }
 
         // Handle "Incorrect" Response
-        private async void OnIncorrectTapped(object sender, EventArgs e)
+        public async void OnIncorrectTapped(object sender, EventArgs e)
         {
             await RecordResponse("Incorrect");
         }
 
         // Handle "No Response"
-        private async void OnNoResponseTapped(object sender, EventArgs e)
+        public async void OnNoResponseTapped(object sender, EventArgs e)
         {
             await RecordResponse("No Response");
         }
 
         // Consolidated method to record responses and handle UI feedback
-        private async Task RecordResponse(string responseType)
+        public async Task RecordResponse(string responseType)
         {
             await SaveSessionData(responseType);
             await DisplayAlert("Response Recorded", $"Student response: {responseType}", "OK");
         }
 
         // Get Selected Prompt Type
-        private string GetSelectedPromptType()
+        public string GetSelectedPromptType()
         {
             if (PhysicalPrompt.IsChecked) return "Physical";
             if (VerbalPrompt.IsChecked) return "Verbal";
@@ -173,13 +173,13 @@ namespace Early_Dev_vs.src
         }
 
         // Handle "Retry Question"
-        private async void OnRetryTapped(object sender, EventArgs e)
+        public async void OnRetryTapped(object sender, EventArgs e)
         {
             await RecordRetry();
         }
 
         // Dedicated method to handle retry logic
-        private async Task RecordRetry()
+        public async Task RecordRetry()
         {
             if (_currentSessionRecord == null || _currentSessionRecord.Id == 0)
             {
@@ -253,7 +253,7 @@ namespace Early_Dev_vs.src
         }
 
         // Handle "End Test"
-        private async void OnEndTestTapped(object sender, EventArgs e)
+        public async void OnEndTestTapped(object sender, EventArgs e)
         {
             await DisplayAlert("Test Completed", "Session data saved and test finalized.", "OK");
             ResetTestSession();
@@ -262,7 +262,7 @@ namespace Early_Dev_vs.src
         }
 
         // Save session data (Placeholder for database integration)
-        private async Task SaveSessionData(string responseType)
+        public async Task SaveSessionData(string responseType)
         {
             string promptType = GetSelectedPromptType();
 
@@ -320,7 +320,7 @@ namespace Early_Dev_vs.src
             Debug.WriteLine($"Session data saved: Student {_currentStudentId}, Response: {responseType}, Prompt: {promptType}, Question ID: {_currentSessionRecord.CurrentQuestionId}");
         }
 
-        private int GetActiveQuestionId()
+        public int GetActiveQuestionId()
         {
             // Ensure the current session has an active question
             if (_currentSessionRecord != null && _currentSessionRecord.CurrentQuestionId > 0)
@@ -333,13 +333,13 @@ namespace Early_Dev_vs.src
         }
 
         // move on to next question once this question is complete, or use this button to skip current question.
-        private async void OnNextQuestionTapped(object sender, EventArgs e)
+        public async void OnNextQuestionTapped(object sender, EventArgs e)
         {
             await LoadQuestion(); // Use the existing LoadQuestion method to get the next question
         }
 
         // Load student name from DB
-        private async Task LoadStudentNameAsync(int studentId)
+        public async Task LoadStudentNameAsync(int studentId)
         {
             if (_dbService == null)
             {
@@ -360,20 +360,33 @@ namespace Early_Dev_vs.src
         }
 
         // Handle Auto-Saves
-        private async void OnAutoSaveTapped(object sender, EventArgs e)
+        public async void OnAutoSaveTapped(object sender, EventArgs e)
         {
             await SaveSessionData("Auto-Save");
             await DisplayAlert("Auto-Save", "Session data saved successfully!", "OK");
         }
 
         // Clear the test session and reset the question list.
-        private void ResetTestSession()
+        public void ResetTestSession()
         {
             if (_dbService != null)
             {
                 _dbService?.ResetTestSession();
                 Debug.WriteLine("Test session has been reset. Questions will start fresh.");
             }
+        }
+
+        // adding in a getter method to allow me to retrieve UI values for testing purposes.
+        public (string studentName, string lessonQuestion, bool verbalChecked, bool physicalChecked, Dictionary<string, bool> selectedImages, string promptType) GetPageState()
+        {
+            return (
+                studentNameLabel?.Text ?? "Unknown Student",
+                LessonQuestionLabel?.Text ?? "No Question Loaded",
+                VerbalPrompt?.IsChecked ?? false,
+                PhysicalPrompt?.IsChecked ?? false,
+                new Dictionary<string, bool>(selectedImages),
+                GetSelectedPromptType() 
+            );
         }
 
     }
