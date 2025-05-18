@@ -115,7 +115,7 @@ namespace Early_Dev_vs.src
 
 
         // Display Student Profile (Example placeholder)
-        public void ShowStudentProfile(string studentName, string age, string bcba, string education)
+        private void ShowStudentProfile(string studentName, string age, string bcba, string education)
         {
             StudentDetailsSection.IsVisible = true;
             LetsLearnTile.IsVisible = true;

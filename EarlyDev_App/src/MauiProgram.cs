@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using Early_Dev_vs.src;
 
-namespace Early_Dev_vs.src
+namespace Early_Dev_vs
 {
     public static class MauiProgram
     {
@@ -18,7 +17,6 @@ namespace Early_Dev_vs.src
 
 #if DEBUG
     		builder.Logging.AddDebug();
-
 #endif
 
             return builder.Build();

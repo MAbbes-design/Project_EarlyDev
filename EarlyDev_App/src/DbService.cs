@@ -72,9 +72,8 @@ namespace Early_Dev_vs.src
 
         // need this to get a question by ID, to allow me to search for a random question to show but not repeat in the same session
         private HashSet<int> _askedQuestionIds = new HashSet<int>();
-
         // Retrieve a random question for test sessions
-        public virtual async Task<QuestionModel> GetRandomQuestionAsync()
+        public async Task<QuestionModel> GetRandomQuestionAsync()
         {
             var questions = await _database.Table<QuestionModel>().ToListAsync();
 
@@ -122,7 +121,7 @@ namespace Early_Dev_vs.src
         // ===================== Test Session Management =====================
 
         // Save a new test session record
-        public virtual async Task SaveTestSessionAsync(TestSessionRecord sessionRecord)
+        public async Task SaveTestSessionAsync(TestSessionRecord sessionRecord)
         {
             await _database.CreateTableAsync<TestSessionRecord>(); //  Ensure table exists, OR creates a new table for this data
             await _database.InsertAsync(sessionRecord); //  Save session record to the database
@@ -135,7 +134,7 @@ namespace Early_Dev_vs.src
         }
 
         // Update an existing test session record (e.g., retry count updates)
-        public virtual async Task<int> UpdateSessionRecordAsync(TestSessionRecord sessionRecord)
+        public async Task<int> UpdateSessionRecordAsync(TestSessionRecord sessionRecord)
         {
             return await _database.UpdateAsync(sessionRecord); // Save updated session record, including retry count
         }
@@ -143,19 +142,19 @@ namespace Early_Dev_vs.src
         // ===================== Question Retry Management =====================
 
         // Add a retry record for a question in a test session
-        public virtual Task<int> AddRetryRecordAsync(QuestionRetryRecord retryRecord)
+        public Task<int> AddRetryRecordAsync(QuestionRetryRecord retryRecord)
         {
             return _database.InsertAsync(retryRecord);
         }
 
         // Updates an existing retry record for a question in a test session.
-        public virtual Task<int> UpdateRetryRecordAsync(QuestionRetryRecord retryRecord)
+        public Task<int> UpdateRetryRecordAsync(QuestionRetryRecord retryRecord)
         {
             return _database.UpdateAsync(retryRecord);
         }
 
         // Grabs the data for specific question retries.
-        public virtual Task<QuestionRetryRecord> GetRetryRecordAsync(int sessionId, int questionId)
+        public Task<QuestionRetryRecord> GetRetryRecordAsync(int sessionId, int questionId)
         {
             return _database.Table<QuestionRetryRecord>()
                 .Where(r => r.SessionId == sessionId && r.QuestionId == questionId)
@@ -163,24 +162,9 @@ namespace Early_Dev_vs.src
         }
 
         // grabs all the records of retries for a question and returns a list of this data for use in the reports page
-        public virtual Task<List<QuestionRetryRecord>> GetAllRetryRecordsAsync()
+        public Task<List<QuestionRetryRecord>> GetAllRetryRecordsAsync()
         {
             return _database.Table<QuestionRetryRecord>().ToListAsync();
         }
-
-        // Adding a method to allow the deletion of data for testing purposes in my unit testing section.
-        public async Task ResetDatabaseAsync()
-        {
-            await _database.CreateTableAsync<StudentProfile>();
-            await _database.CreateTableAsync<QuestionModel>();
-            await _database.CreateTableAsync<TestSessionRecord>(); 
-            await _database.CreateTableAsync<QuestionRetryRecord>();
-
-            await _database.DeleteAllAsync<StudentProfile>();
-            await _database.DeleteAllAsync<QuestionModel>();
-            await _database.DeleteAllAsync<TestSessionRecord>();
-            await _database.DeleteAllAsync<QuestionRetryRecord>();
-        }
-
     }
 }
