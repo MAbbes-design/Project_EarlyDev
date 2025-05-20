@@ -39,6 +39,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
 
+# Tests
   test:
    needs: build # runs after the build job
    runs-on: windows-latest
