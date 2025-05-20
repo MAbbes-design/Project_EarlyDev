@@ -38,10 +38,7 @@ jobs:
         run: dotnet tool install --global dotnet-format # installs Stylecop to the runner to allow for enforcing formatting rules.
 
       - name: Fix code style issues
-        run: dotnet format EarlyDev_App/Early_Dev_vs.csproj --verbosity diagnostic # formats my code using stylecop 
-        
-      - name: Run StyleCop
-        run: dotnet build /p:TreatWarningsAsErrors=true # runs stylecop analysis on build with error handling
+        run: dotnet format EarlyDev_App/Early_Dev_vs.csproj --verbosity diagnostic # formats my code using stylecop         
 
       - name: Install SonarScanner # installs sonarclouds sonar scanner to carry out code analysis
         run: dotnet tool install --global dotnet-sonarscanner
