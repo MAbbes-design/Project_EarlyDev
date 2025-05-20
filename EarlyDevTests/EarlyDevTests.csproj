@@ -1,17 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+	<!--<PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
 		<TargetFrameworks>net8.0-windows10.0.19041.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-		<TargetFrameworks>net8.0</TargetFrameworks>
-	</PropertyGroup>
+		<TargetFrameworks>net8.0-android</TargetFrameworks>
+	</PropertyGroup>-->
 
   <PropertyGroup>
-	  <!--<TargetFrameworks>net8.0-windows10.0.19041.0;net8.0-android34.0</TargetFrameworks> test
-	<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
-	<TargetFrameworks>net8.0-android34.0</TargetFrameworks>-->
+	  <TargetFrameworks>net8.0-windows10.0.19041.0;net8.0-android34.0</TargetFrameworks>
+	<!--<TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>-->
+	  <!--<TargetFrameworks>net8.0-android34.0</TargetFrameworks>-->
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
