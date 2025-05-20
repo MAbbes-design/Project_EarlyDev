@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Early_Dev_vs.src;
 
-namespace Early_Dev_vs.src
+namespace Early_Dev_vs
 {
     public static class MauiProgram
     {
