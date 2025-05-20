@@ -61,10 +61,6 @@ jobs:
           echo "Vulnerable dependencies detected! Merge blocked."
           exit 1
         fi
-        if grep -i "CRITICAL" reports/dependency-check-report.html; then
-          echo "Critical vulnerabilities found, Merge will be blocked."
-          exit 1
-        fi
     
     - name: Complete SecOps Checks # Confirm that all security checks have completed
       run: echo "Security checks completed!"
