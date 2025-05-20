@@ -13,10 +13,10 @@ on:
     branches:
       - main  # Runs when a PR targets main
 
-  workflow_run:
-    workflows: ["SecOps Pipeline"]  # Runs after secops.yml
-    types:
-      - completed
+  #workflow_run:
+  #  workflows: ["SecOps Pipeline"]  # Runs after secops.yml
+   # types:
+   #   - completed
 
 jobs:
   build:
@@ -46,7 +46,7 @@ jobs:
 
   test:
    needs: build # runs after the build job
-   runs-on: windows-latest
+   runs-on: ubuntu-latest
    steps:
     - name: Checkout Code
       uses: actions/checkout@v4
