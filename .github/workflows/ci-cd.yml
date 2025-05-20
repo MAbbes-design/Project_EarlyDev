@@ -44,9 +44,6 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
 
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
-
   test:
    needs: build # runs after the build job
    runs-on: windows-latest
