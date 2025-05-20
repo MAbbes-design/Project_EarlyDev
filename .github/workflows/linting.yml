@@ -50,7 +50,10 @@ jobs:
       
       - name: Restore dependencies # restores dependencies again so that sonarcloud sees them
         run: dotnet restore
-      
+
+      - name: Remove xUnit Test Adapter Before Release
+        run: rm EarlyDev_App/bin/Release/net8.0-android/xunit.runner.visualstudio.testadapter.dll
+   
       - name: Build project # builds the project while sonarcloud captures data for analysis
         run: dotnet build --no-restore --configuration Release
       
