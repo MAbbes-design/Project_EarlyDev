@@ -35,11 +35,11 @@ jobs:
     - name: Install Android Workloads
       run: dotnet workload install maui-android
 
-    - name: Build Android App
-      run: dotnet build --framework net8.0-android
-        
     - name: Restore dependencies
       run: dotnet restore
+
+    - name: Build Android App
+      run: dotnet build --framework net8.0-android
       
     - name: Build
       run: dotnet build --no-restore
