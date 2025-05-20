@@ -5,6 +5,10 @@
 name: ci-cd.NET
 
 on:
+  pull_request:
+    branches:
+      - main  # Runs when a PR targets main
+
   workflow_run:
     workflows: ["SecOps Pipeline"]  # Runs after secops.yml
     types:
@@ -26,9 +30,6 @@ jobs:
 
     - name: Install Android Workloads
       run: dotnet workload install maui-android
-
-    - name: Install SQLite via NuGet
-      run: dotnet add package sqlite-net-pcl --version 1.9.172
 
     - name: Build Android App
       run: dotnet build --framework net8.0-android
