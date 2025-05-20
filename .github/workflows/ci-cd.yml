@@ -36,7 +36,7 @@ jobs:
       run: dotnet workload install maui-android
 
     - name: Build Android App
-      run: dotnet build --framework net8.0-android
+      run: dotnet build -p:TargetFramework=net8.0-android
         
     - name: Restore dependencies
       run: dotnet restore
