@@ -26,31 +26,31 @@ namespace Early_Dev_vs.src
         // ===================== Student CRUD =====================
 
         // Add a new student profile
-        public Task<int> AddStudentAsync(StudentProfile student)
+        public virtual Task<int> AddStudentAsync(StudentProfile student)
         {
             return _database.InsertAsync(student);
         }
 
         // list all students
-        public Task<List<StudentProfile>> GetAllStudentsAsync()
+        public virtual Task<List<StudentProfile>> GetAllStudentsAsync()
         {
             return _database.Table<StudentProfile>().ToListAsync();
         }
 
         // Get a single students profile by ID
-        public Task<StudentProfile> GetStudentByIdAsync(int studentId)
+        public virtual Task<StudentProfile> GetStudentByIdAsync(int studentId)
         {
             return _database.Table<StudentProfile>().Where(s => s.Id == studentId).FirstOrDefaultAsync();
         }
 
         // Update student profile
-        public Task<int> UpdateStudentAsync(StudentProfile student)
+        public virtual Task<int> UpdateStudentAsync(StudentProfile student)
         {
             return _database.UpdateAsync(student);
         }
 
         // delete a student profile, and for goodness sake dont forget to add a delete button to the app for this
-        public Task<int> DeleteStudentAsync(StudentProfile student)
+        public virtual Task<int> DeleteStudentAsync(StudentProfile student)
         {
             return _database.DeleteAsync(student);
         }
@@ -58,14 +58,14 @@ namespace Early_Dev_vs.src
         // ===================== Question CRUD =====================
 
         // Create a new test question
-        public async Task<int> AddQuestionAsync(QuestionModel question)
+        public virtual async Task<int> AddQuestionAsync(QuestionModel question)
         {
             question.ImageSourcesString = string.Join(",", question.ImageSources); // Ensure string is updated
             return await _database.InsertAsync(question);
         }
 
         // Get all stored questions
-        public Task<List<QuestionModel>> GetAllQuestionsAsync()
+        public virtual Task<List<QuestionModel>> GetAllQuestionsAsync()
         {
             return _database.Table<QuestionModel>().ToListAsync();
         }
@@ -101,19 +101,19 @@ namespace Early_Dev_vs.src
         }
 
         // Update an existing test question
-        public async Task<int> UpdateQuestionAsync(QuestionModel question)
+        public virtual async Task<int> UpdateQuestionAsync(QuestionModel question)
         {
             return await _database.UpdateAsync(question);
         }
 
         // Delete a test question
-        public Task<int> DeleteQuestionAsync(QuestionModel question)
+        public virtual Task<int> DeleteQuestionAsync(QuestionModel question)
         {
             return _database.DeleteAsync(question);
         }
 
         // Reset function for the test session, helps to clear the asked questions list.
-        public void ResetTestSession()
+        public virtual void ResetTestSession()
         {
             _askedQuestionIds.Clear(); // Clears the list of asked questions for the next test session
             Debug.WriteLine("Test session reset: Questions will start fresh.");
@@ -129,7 +129,7 @@ namespace Early_Dev_vs.src
         }
 
         // Retrieve all test sessions
-        public Task<List<TestSessionRecord>> GetAllTestSessionsAsync()
+        public virtual Task<List<TestSessionRecord>> GetAllTestSessionsAsync()
         {
             return _database.Table<TestSessionRecord>().ToListAsync();
         }
