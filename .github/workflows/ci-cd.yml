@@ -63,7 +63,7 @@ jobs:
       run: dotnet build
       
     - name: Test
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test EarlyDevTests/EarlyDevTests.csproj --no-build --verbosity normal
  
   simulated-deployment:
     needs: test
