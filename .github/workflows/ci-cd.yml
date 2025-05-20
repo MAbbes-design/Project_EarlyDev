@@ -37,9 +37,6 @@ jobs:
 
     - name: Install Android Workloads
       run: dotnet workload install maui-android
-      
-    - name: Install SQLite
-      run: dotnet add package sqlite-net-pcl --version 1.9.172
 
     - name: Build Android App
       run: dotnet build --framework net8.0-android
