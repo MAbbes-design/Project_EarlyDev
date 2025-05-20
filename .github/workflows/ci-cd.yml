@@ -1,14 +1,22 @@
-# This workflow will build, test and deploy a .NET MAUI project
+# This workflow will build, test and deploy a .NET MAUI project.
 # This was an automated Github Actions generated file, and I amended it to make it more specific to my requirements.
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
 
 name: ci-cd.NET
 
 on:
-  workflow_run:
-    workflows: ["SecOps Pipeline"]  # Runs after secops.yml
-    types:
-      - completed
+  push:
+    branches:
+      - main
+      
+  pull_request:
+    branches:
+      - main  # Runs when a PR targets main
+
+  #workflow_run:
+  #  workflows: ["SecOps Pipeline"]  # Runs after secops.yml
+   # types:
+   #   - completed
 
 jobs:
   build:
@@ -27,19 +35,15 @@ jobs:
     - name: Install Android Workloads
       run: dotnet workload install maui-android
 
-    - name: Install SQLite via NuGet
-      run: dotnet add package sqlite-net-pcl --version 1.9.172
+    - name: Restore dependencies
+      run: dotnet restore
 
     - name: Build Android App
       run: dotnet build --framework net8.0-android
-        
-    - name: Restore dependencies
-      run: dotnet restore
       
     - name: Build
       run: dotnet build --no-restore
 
-# Tests
   test:
    needs: build # runs after the build job
    runs-on: windows-latest
@@ -51,13 +55,19 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-  
+
+    - name: Restore dependencies
+      run: dotnet restore
+      
+    - name: Build
+      run: dotnet build
+      
     - name: Test
       run: dotnet test --no-build --verbosity normal
  
   simulated-deployment:
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Simulated Deployment Step
         run: echo "🚀 Simulating deployment... "
