@@ -11,7 +11,11 @@
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
-  <ItemGroup>
+	<PropertyGroup Condition="'$(BuildForAndroid)' == 'true' OR '$(BuildForUbuntu)' == 'true'">
+		<TargetFrameworks>$(TargetFrameworks);net8.0-android34.0</TargetFrameworks>
+	</PropertyGroup>
+
+	<ItemGroup>
     <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
