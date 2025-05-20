@@ -32,9 +32,6 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Set Build Flag for Android
-      run: echo "BuildForAndroid=true" >> $GITHUB_ENV
-
     - name: Install Android Workloads
       run: dotnet workload install maui-android
 
