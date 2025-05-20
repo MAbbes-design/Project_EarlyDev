@@ -74,10 +74,12 @@
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 		<PackageReference Include="xunit" Version="2.9.3" />
-		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.0">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.0"
+			ExcludeAssets="Runtime" Condition="'$(Configuration)' == 'Release'">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+
 	</ItemGroup>
 
 	<ItemGroup>
@@ -87,10 +89,6 @@
 	  <Compile Update="src\QuestionManagementPage.xaml.cs">
 	    <DependentUpon>QuestionManagementPage.xaml</DependentUpon>
 	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(Configuration)' == 'Release'">
-		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.0" ExcludeAssets="Runtime"/>
 	</ItemGroup>
 
 	<ItemGroup>
