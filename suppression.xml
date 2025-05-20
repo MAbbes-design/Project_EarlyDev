@@ -3,5 +3,6 @@
 	<suppress>
 		<notes>App absolutely requires this functionality and its too late for me to change to a different DB type on the 20th of May.</notes>
 		<gav regex="true">^sqlite-net-pcl:1\.9\.172$</gav>
+		<cvssBelow>10.0</cvssBelow>
 	</suppress>
 </suppressions>
