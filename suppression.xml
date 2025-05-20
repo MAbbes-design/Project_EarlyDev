@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
 	<suppress>
-		<notes>App absolutely requires this functionality and its too late for me to change to a different DB type on the 20th of May.</notes>
+		<notes>App absolutely requires this functionality and it's too late to change to a different DB type on the 20th of May. These are known SQLite vulnerabilities that have been assessed.</notes>
 		<gav regex="true">^sqlite-net-pcl:1\.9\.172$</gav>
-		<vulnerabilityName regex="true">.*</vulnerabilityName>
+		<cve>CVE-2017-10989</cve>
+		<cve>CVE-2019-19646</cve>
+		<cve>CVE-2020-11656</cve>
+		<cve>CVE-2015-5895</cve>
+		<cve>CVE-2018-20346</cve>
+		<cve>CVE-2018-20506</cve>
+		<cve>CVE-2015-3414</cve>
+		<cve>CVE-2015-3415</cve>
+		<cve>CVE-2015-3416</cve>
+		<cve>CVE-2015-3717</cve>
+		<cve>CVE-2018-20505</cve>
+		<cve>CVE-2018-8740</cve>
+		<cve>CVE-2020-11655</cve>
+		<cve>CVE-2022-35737</cve>
+		<cve>CVE-2023-7104</cve>
+		<cve>CVE-2020-13630</cve>
+		<cve>CVE-2020-13434</cve>
+		<cve>CVE-2020-13631</cve>
+		<cve>CVE-2020-13632</cve>
+		<cve>CVE-2020-15358</cve>
+		<cve>CVE-2020-13435</cve>
 	</suppress>
 </suppressions>
