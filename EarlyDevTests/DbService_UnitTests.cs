@@ -57,10 +57,10 @@ namespace EarlyDevTests
             await ResetDatabaseAsync();
             var student = new StudentProfile { Name = "Kakarot", Age = 6 };
             await _TestDb.AddStudentAsync(student);
-            student.Name = "Kakarot";
+            student.Name = "Goku";
             await _TestDb.UpdateStudentAsync(student);
             var updatedStudent = await _TestDb.GetStudentByIdAsync(student.Id);
-            Assert.Equal("Kakarot", updatedStudent.Name);
+            Assert.Equal("Goku", updatedStudent.Name);
         }
 
         [Fact]

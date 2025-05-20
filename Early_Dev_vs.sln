@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Early_Dev_vs", "EarlyDev_Ap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EarlyDevTests", "EarlyDevTests\EarlyDevTests.csproj", "{862CD312-83F9-5231-497E-1E1278367161}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EarlyDevUITests", "EarlyDevUITests\EarlyDevUITests.csproj", "{981FF296-5F5E-45DE-B386-42130A846053}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,14 +31,6 @@ Global
 		{862CD312-83F9-5231-497E-1E1278367161}.Release|Any CPU.Build.0 = Release|Any CPU
 		{862CD312-83F9-5231-497E-1E1278367161}.Release|x64.ActiveCfg = Release|x64
 		{862CD312-83F9-5231-497E-1E1278367161}.Release|x64.Build.0 = Release|x64
-		{981FF296-5F5E-45DE-B386-42130A846053}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{981FF296-5F5E-45DE-B386-42130A846053}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{981FF296-5F5E-45DE-B386-42130A846053}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{981FF296-5F5E-45DE-B386-42130A846053}.Debug|x64.Build.0 = Debug|Any CPU
-		{981FF296-5F5E-45DE-B386-42130A846053}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{981FF296-5F5E-45DE-B386-42130A846053}.Release|Any CPU.Build.0 = Release|Any CPU
-		{981FF296-5F5E-45DE-B386-42130A846053}.Release|x64.ActiveCfg = Release|Any CPU
-		{981FF296-5F5E-45DE-B386-42130A846053}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
