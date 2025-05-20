@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/suppress">
+	<suppress>
+		<package>sqlite-net-pcl:1.9.172</package>
+		<reason>false positive - App absolutely requires this functionality and its too late for me to change to a different DB type on the 20th of May.</reason>
+	</suppress>
+</suppressions>
