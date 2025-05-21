@@ -1,6 +1,4 @@
 ﻿using Early_Dev_vs.src;
-using Microsoft.Maui.Controls;
-using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
 using static Early_Dev_vs.src.DataModels;
 
