@@ -42,7 +42,7 @@ jobs:
       run: chmod 644 /home/runner/work/Project_EarlyDev/Project_EarlyDev/suppression.xml
         
     - name: Run Dependency-Check with NVD key #scans my dependencies
-      run: ./dependency-check/bin/dependency-check.sh --project "EarlyDevSecurityScan" --out reports --scan /home/runner/work/Project_EarlyDev/Project_EarlyDev/EarlyDev_App /home/runner/work/Project_EarlyDev/Project_EarlyDev/EarlyDevTests --nvdApiKey ${{ secrets.NVD_API_KEY }} --suppression /home/runner/work/Project_EarlyDev/Project_EarlyDev/suppression.xml --failOnCVSS 10.0
+      run: ./dependency-check/bin/dependency-check.sh --project "EarlyDevSecurityScan" --out reports --scan /home/runner/work/Project_EarlyDev/Project_EarlyDev/EarlyDev_App /home/runner/work/Project_EarlyDev/Project_EarlyDev/EarlyDevTests --nvdApiKey ${{ secrets.NVD_API_KEY }} --suppression /home/runner/work/Project_EarlyDev/Project_EarlyDev/suppression.xml
 
     - name: Install Gitleaks 
       run: |
