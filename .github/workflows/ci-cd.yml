@@ -5,18 +5,18 @@
 name: ci-cd.NET
 
 on:
-  push:
-    branches:
-      - main
+  #push:
+    #branches:
+      #- main
       
-  pull_request:
-    branches:
-      - main  # Runs when a PR targets main
+  #pull_request:
+    #branches:
+      #- main  # Runs when a PR targets main
 
-  #workflow_run:
-  #  workflows: ["SecOps Pipeline"]  # Runs after secops.yml
-   # types:
-   #   - completed
+  workflow_run:
+    workflows: ["SecOps Pipeline"]  # Runs after secops.yml
+    types:
+      - completed
 
 jobs:
   build:
