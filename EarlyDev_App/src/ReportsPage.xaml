@@ -1,7 +1,8 @@
 <ContentPage 
     x:Class="Early_Dev_vs.src.ReportsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui">
     <!-- Title="Reports"> -->
 
     <ScrollView>
@@ -18,6 +19,7 @@
             <!-- Grid Layout for Report Tiles -->
             <Grid ColumnSpacing="10" RowSpacing="10">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
@@ -49,18 +51,21 @@
                 </Frame>
 
                 <!-- Progress Graphs Tile -->
-                <Frame Grid.Row="1" Grid.Column="0" CornerRadius="10" BackgroundColor="#C7F7AE" Padding="20">
+                <Frame x:Name="ProgressGraphFrame" Grid.Row="1" Grid.Column="0" CornerRadius="10" BackgroundColor="#C7F7AE" Padding="20">
                     <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
                         <Label Text="Progress Graphs" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center"/>
                         <Label Text="View student progress trends." FontSize="12" HorizontalOptions="Center"/>
+                        <Grid HeightRequest="350">
+                            <microcharts:ChartView x:Name="ProgressChart"/>
+                        </Grid>
                     </StackLayout>
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnProgressGraphsTapped" />
                     </Frame.GestureRecognizers>
                 </Frame>
 
-                <!-- More Options Tile -->
-                <Frame Grid.Row="1" Grid.Column="1" CornerRadius="10" BackgroundColor="#D8AEF7" Padding="20">
+                <!-- More Options Tile
+                <Frame Grid.Row="1" Grid.Column="0" CornerRadius="10" BackgroundColor="#D8AEF7" Padding="20">
                     <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
                         <Label Text="More Options" FontSize="16" FontAttributes="Bold" HorizontalOptions="Center"/>
                         <Label Text="Reserved for future use." FontSize="12" HorizontalOptions="Center"/>
@@ -68,7 +73,7 @@
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="OnMoreOptionsTapped" />
                     </Frame.GestureRecognizers>
-                </Frame>
+                </Frame> -->
             </Grid>
 
             <!-- Hidden Filter Panel -->
@@ -77,10 +82,10 @@
                 <Picker x:Name="QuestionTypePicker">
                     <Picker.ItemsSource>
                         <x:Array Type="{x:Type x:String}">
-                            <x:String>All</x:String>
-                            <x:String>Multiple Choice</x:String>
-                            <x:String>True/False</x:String>
-                            <x:String>Short Answer</x:String>
+                            <x:String>All Questions (Correct vs Incorrect)</x:String>
+                            <x:String>All Questions (Prompt Type Breakdown)</x:String>
+                            <x:String>All Questions (Retries Per Question)</x:String>
+                            <x:String>Skipped Questions (Answered vs Skipped)</x:String>
                         </x:Array>
                     </Picker.ItemsSource>
                 </Picker>

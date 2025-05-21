@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Early_Dev_vs.src;
+using Microcharts.Maui;
 
 namespace Early_Dev_vs
 {
@@ -10,6 +11,7 @@ namespace Early_Dev_vs
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .UseMicrocharts()
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
