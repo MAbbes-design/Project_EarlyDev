@@ -5,15 +5,11 @@ on:
     branches:
       - main
       
-  #pull_request:
-  #  branches:
-  #    - main 
-  #workflow_run:
-  #  workflows: ["Code Review Feedback"]  # Runs after code-review.yml
-  #  types:
-  #    - completed
+  workflow_run:
+    workflows: ["Code Review Feedback"]  # Runs after code-review.yml
+    types:
+      - completed
   
-
 jobs:
   lint:
     runs-on: ubuntu-latest # uses a Ubuntu runner environment
