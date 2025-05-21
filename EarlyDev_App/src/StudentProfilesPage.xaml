@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Early_Dev_vs.src.StudentProfilesPage">
 
-    <ScrollView>
+    <ScrollView x:Name="ScrollViewer">
         <VerticalStackLayout Padding="20" Spacing="20">
 
             <!-- Create New Student Profile Tile -->
@@ -50,12 +50,18 @@
             </StackLayout>
 
             <!-- Dynamic Student Details (Appears when profile is selected) -->
+            <!-- Edit & Delete Buttons (Visible when student profile is shown) -->
             <StackLayout x:Name="StudentDetailsSection" IsVisible="False" Padding="10">
                 <Label x:Name="StudentNameLabel" Text="Name: " FontSize="16"/>
                 <Label x:Name="StudentAgeLabel" Text="Age: " FontSize="16"/>
                 <Label x:Name="BCBANameLabel" Text="Assigned BCBA: " FontSize="16"/>
                 <Label x:Name="EducationLevelLabel" Text="Education Level: " FontSize="16"/>
-                <Button Text="Close Profile" Clicked="OnCloseProfile"/>
+                <HorizontalStackLayout Spacing="10" HorizontalOptions="Center">
+                    <Button Text="Edit" BackgroundColor="Orange" TextColor="White" Clicked="OnEditStudent" WidthRequest="120" HeightRequest="35"/>
+                    <Button Text="Delete" BackgroundColor="Red" TextColor="White" Clicked="OnDeleteStudent" WidthRequest="120" HeightRequest="35"/>
+                    <Button Text="Close" Clicked="OnCloseProfile" WidthRequest="120" HeightRequest="35"/>
+                </HorizontalStackLayout>
+
             </StackLayout>
 
             <!-- Let's Learn Tile (Appears when student profile is selected) -->

@@ -1,5 +1,6 @@
 ﻿using Early_Dev_vs.src;
 using Microsoft.Maui.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
 using static Early_Dev_vs.src.DataModels;
 
@@ -16,6 +17,15 @@ namespace Early_Dev_vs.src
         private void OnCreateStudentTapped(object sender, EventArgs e)
         {
             CreateStudentForm.IsVisible = !CreateStudentForm.IsVisible; // Toggle visibility
+            
+            // Hide student details if opening the create form
+            if (CreateStudentForm.IsVisible)
+            {
+                StudentDetailsSection.IsVisible = false;
+                LetsLearnTile.IsVisible = false;
+                ReportsTile.IsVisible = false;
+                IAPTile.IsVisible = false;
+            }
         }
 
         // Handle "Search Student Profiles" tap
@@ -28,46 +38,99 @@ namespace Early_Dev_vs.src
             IAPTile.IsVisible = false;
         }
 
+        // allows for the editing of student profiles.
+        private async void OnEditStudent(object sender, EventArgs e)
+        {
+            if (App.ActiveStudent == null)
+            {
+                await DisplayAlert("Error", "No student selected!", "OK");
+                return;
+            }
+
+            // Fill form fields with existing student details
+            StudentNameEntry.Text = App.ActiveStudent.Name;
+            StudentAgeEntry.Text = App.ActiveStudent.Age.ToString();
+            BCBANameEntry.Text = App.ActiveStudent.BCBA;
+            EducationLevelEntry.Text = App.ActiveStudent.EducationLevel;
+
+            // Make form visible for editing
+            CreateStudentForm.IsVisible = true;
+
+            // Scroll the page up to the edit form
+            await Task.Delay(100); // Small delay to ensure visibility before scrolling
+            await ScrollViewer.ScrollToAsync(CreateStudentForm, ScrollToPosition.Start, true);
+        }
+
         // Handle Save Student Profile
         private async void OnSaveStudent(object sender, EventArgs e)
         {
-            // Create a new student profile from form inputs
-            var student = new StudentProfile
+            if (string.IsNullOrWhiteSpace(StudentNameEntry.Text) ||
+                string.IsNullOrWhiteSpace(StudentAgeEntry.Text) ||
+                string.IsNullOrWhiteSpace(BCBANameEntry.Text) ||
+                string.IsNullOrWhiteSpace(EducationLevelEntry.Text))
             {
-                Name = StudentNameEntry.Text,
-                Age = int.Parse(StudentAgeEntry.Text),
-                BCBA = BCBANameEntry.Text,
-                EducationLevel = EducationLevelEntry.Text,
-                CompletedSessions = 0, // initialise this, ill need it later
-                IncompleteSessions = 0 // initialise this also so I can bump the number later in the test sessions page.. I'll need more metric gathering but possibly in the other pages
-            };
-
-            // Save to SQLite Database using DbService
-            if (App.Database != null)
-            {
-                await App.Database.AddStudentAsync(student);
-
-                //  Check if the student exists after saving
-                var savedStudent = await App.Database.GetStudentByIdAsync(student.Id);
-                Debug.WriteLine(savedStudent != null
-                    ? $"Student Verified in DB - ID: {savedStudent.Id}, Name: {savedStudent.Name}"
-                    : $"Student NOT found in DB immediately after save!");
-
-                App.SetActiveStudent(student.Id);
+                await DisplayAlert("Error", "All fields must be filled out before saving!", "OK");
+                return;
             }
-            else
+
+            if (!int.TryParse(StudentAgeEntry.Text, out int studentAge))
+            {
+                await DisplayAlert("Error", "Age must be a valid number!", "OK");
+                return;
+            }
+
+            if (App.Database == null)
             {
                 await DisplayAlert("Error", "Database not initialized!", "OK");
+                return;
             }
 
-            await DisplayAlert("Success", $"Student {student.Name} added!", "OK");
+            if (App.ActiveStudent != null) // Update existing student
+            {
+                App.ActiveStudent.Name = StudentNameEntry.Text;
+                App.ActiveStudent.Age = studentAge;
+                App.ActiveStudent.BCBA = BCBANameEntry.Text;
+                App.ActiveStudent.EducationLevel = EducationLevelEntry.Text;
 
-            // Clear the form after saving
+                await App.Database.UpdateStudentAsync(App.ActiveStudent);
+                await DisplayAlert("Success", "Profile updated successfully!", "OK");
+            }
+            else // Create a new student
+            {
+                var newStudent = new StudentProfile
+                {
+                    Name = StudentNameEntry.Text,
+                    Age = studentAge,
+                    BCBA = BCBANameEntry.Text,
+                    EducationLevel = EducationLevelEntry.Text,
+                    CompletedSessions = 0,
+                    IncompleteSessions = 0
+                };
+
+                await App.Database.AddStudentAsync(newStudent);
+
+                // Ensure student record exists after saving
+                var savedStudent = await App.Database.GetStudentByIdAsync(newStudent.Id);
+                Debug.WriteLine(savedStudent != null
+                    ? $"Student Verified in DB - ID: {savedStudent.Id}, Name: {savedStudent.Name}"
+                    : "Student NOT found in DB immediately after save!");
+
+                App.SetActiveStudent(newStudent.Id);
+                await DisplayAlert("Success", $"Student {newStudent.Name} added successfully!", "OK");
+            }
+
+            // Clear form inputs and hide the form
             StudentNameEntry.Text = string.Empty;
             StudentAgeEntry.Text = string.Empty;
             BCBANameEntry.Text = string.Empty;
             EducationLevelEntry.Text = string.Empty;
-            CreateStudentForm.IsVisible = false; // Hide form
+            CreateStudentForm.IsVisible = false;
+
+            // Hide profile details after saving
+            StudentDetailsSection.IsVisible = false;
+            LetsLearnTile.IsVisible = false;
+            ReportsTile.IsVisible = false;
+            IAPTile.IsVisible = false;
         }
 
         // Handle Cancel Student Profile Creation
@@ -113,7 +176,6 @@ namespace Early_Dev_vs.src
             SearchStudentEntry.Text = string.Empty;
         }
 
-
         // Display Student Profile (Example placeholder)
         public void ShowStudentProfile(string studentName, string age, string bcba, string education)
         {
@@ -157,7 +219,6 @@ namespace Early_Dev_vs.src
             }
         }
 
-
         // Navigation to Reports Page
         private async void OnReportsTapped(object sender, EventArgs e)
         {
@@ -165,7 +226,7 @@ namespace Early_Dev_vs.src
             await Navigation.PushAsync(new ReportsPage());
         }
 
-        // Navigation to IAP Page
+        // Navigation to IAP Page - not implemented yet
         private async void OnIAPTapped(object sender, EventArgs e)
         {
             await DisplayAlert("Feature Unavailable", "This feature has not been implemented yet.", "OK");
@@ -179,7 +240,52 @@ namespace Early_Dev_vs.src
             ReportsTile.IsVisible = false;
             IAPTile.IsVisible = false;
         }
-        // deprecated thus method out, but not deleting it yet, i may need it later.
+
+        // added a delete student profiles button. This will delete the a selected student from the database if it is pressed
+        private async void OnDeleteStudent(object sender, EventArgs e)
+        {
+            if (App.ActiveStudent == null)
+            {
+                await DisplayAlert("Error", "No student selected!", "OK");
+                return;
+            }
+
+            bool confirmDelete = await DisplayAlert(
+                "Delete Profile",
+                $"Are you sure you want to delete {App.ActiveStudent.Name}?",
+                "Yes", "Cancel"
+            );
+
+            if (!confirmDelete)
+            {
+                return;
+            }
+
+            // Ensure App.ActiveStudent is not null before deleting
+            if (App.Database != null && App.ActiveStudent != null)
+            {
+                await App.Database.DeleteStudentAsync(App.ActiveStudent);
+            }
+            else
+            {
+                await DisplayAlert("Error", "Database not initialized or student reference lost!", "OK");
+                return;
+            }
+
+            // Clear active student reference
+            App.ActiveStudent = null;
+            App.ActiveStudentId = null;
+
+            await DisplayAlert("Success", "Student profile deleted!", "OK");
+
+            // Hide student profile details
+            StudentDetailsSection.IsVisible = false;
+            LetsLearnTile.IsVisible = false;
+            ReportsTile.IsVisible = false;
+            IAPTile.IsVisible = false;
+        }
+
+        // deprecated this method out, but not deleting it yet, i may need it later.
         private async void OnStudentSelected(int studentId, string studentName)
         {
             App.SetActiveStudent(studentId); // Set active student
